@@ -5,7 +5,7 @@ $scriptRoot = "$home\Dropbox\Scripts"
 
 . "$scriptRoot\New-Path.ps1" $outputPath
 
-$version = . "$home\Dropbox\Scripts\Get-Version.ps1" (Join-Path $srcRoot $versionFile -Resolve)
+$version = . "$scriptRoot\Get-Version.ps1" (Join-Path $srcRoot $versionFile -Resolve)
 
 . "$scriptRoot\Pack-Project.ps1" Utility $srcRoot $version $outputPath
 
