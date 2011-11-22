@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Utility
@@ -37,7 +38,7 @@ namespace Utility
     [DllImport("shlwapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern bool PathCanonicalize([Out] StringBuilder dst, string src);
     
-    [DllImport("shlwapi.dll", SetLastError = true)]
-    private static extern string PathCombine([Out] StringBuilder lpszDest, string lpszDir, string lpszFile);
+    [DllImport("shlwapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern IntPtr PathCombine([Out] StringBuilder lpszDest, string lpszDir, string lpszFile);
   }
 }

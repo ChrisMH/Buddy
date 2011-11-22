@@ -16,9 +16,9 @@ namespace Utility.Test
     [Test]
     public void PathCombine()
     {
-      var result = Path.Combine(@"C:\Windows\System32\.\", @"Drivers\..");
+      var result = Path.Combine(@"D:\DevL\Overview\Client\src\Client.Test\bin\Debug", @"..\..\..\Client.Web");
 
-      Assert.AreEqual(@"C:\Windows\System32", result);
+      Assert.AreEqual(@"D:\DevL\Overview\Client\src\Client.Web", result);
     }
   }
 }
