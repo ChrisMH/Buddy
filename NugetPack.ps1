@@ -2,7 +2,7 @@ $srcRoot = '.\src'                     # relative to script directory
 $versionFile = 'SharedAssemblyInfo.cs' # relative to $srcRoot
 $outputPath = "$home\Dropbox\Packages"
 
-Import-Module "$home\Dropbox\Scripts\NugetUtilities.psm1"
+Import-Module NugetUtilities
 
 New-Path $outputPath
 
