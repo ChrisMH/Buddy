@@ -1,40 +1,38 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Utility
 {
   [Serializable]
   public class ReflectionType : IComparable<Type>
   {
-    public ReflectionType(string packed)
+    public ReflectionType(string fullName)
     {
-      var assemblyClass = packed.Split(new [] {':'});
-      if (assemblyClass.Length != 2)
+      var match = Regex.Match(fullName, @"(?<ClassName>^[^,\s]*)[,\s]*(?<AssemblyName>.*$)");
+      if(!match.Success)
       {
-        throw new Exception(String.Format("Invalid packed assembly name/class name string: {0}", packed));
+        throw new ArgumentException(string.Format("Invalid fullName: '{0}'", fullName), "fullName");
       }
-      AssemblyName = assemblyClass[0];
-      ClassName = assemblyClass[1];
-    }
+      AssemblyName = string.IsNullOrWhiteSpace(match.Groups["AssemblyName"].Value) ? null : match.Groups["AssemblyName"].Value;
+      ClassName = match.Groups["ClassName"].Value;
 
-    public ReflectionType(string assemblyName, string className)
-    {
-      AssemblyName = assemblyName;
-      ClassName = className;
+      if(string.IsNullOrWhiteSpace(ClassName))
+      {
+        throw new ArgumentException(string.Format("Invalid fullName: '{0}'", fullName), "fullName");
+      }
     }
 
     public ReflectionType(Type type)
+    : this(type.AssemblyQualifiedName)
     {
-      AssemblyName = type.Assembly.GetName().Name;
-      ClassName = type.FullName;
-      classType = type;
     }
 
     public string AssemblyName { get; private set; }
-
     public string ClassName { get; private set; }
 
-    public object CreateObject(object[] parameters)
+    public object CreateObject(params object[] parameters)
     {
       return CreateType().Assembly.CreateInstance(ClassName, false, BindingFlags.CreateInstance,
                                                   null, parameters, null, null);
@@ -49,22 +47,14 @@ namespace Utility
 
       if (AssemblyName == null)
       {
-        var assembly = Assembly.GetExecutingAssembly();
-        classType = assembly.GetType(ClassName, false, false);
-        if (classType == null)
+        classType = AppDomain.CurrentDomain
+          .GetAssemblies()
+          .SelectMany(a => a.GetTypes())
+          .FirstOrDefault(t => t.FullName.Equals(ClassName));
+
+        if(classType == null)
         {
-          assembly = Assembly.GetCallingAssembly();
-          classType = assembly.GetType(ClassName, false, false);
-          if (classType == null)
-          {
-            assembly = Assembly.GetEntryAssembly();
-            classType = assembly.GetType(ClassName, false, false);
-            if (classType == null)
-            {
-              throw new Exception(String.Format("Unable to find an assembly containing the type '{0}'",
-                                                ClassName));
-            }
-          }
+          throw new ApplicationException(string.Format("Could not find a type matching '{0}' in any loaded assemblies", ClassName));
         }
       }
       else
@@ -74,29 +64,28 @@ namespace Utility
         {
           assembly = Assembly.Load(AssemblyName);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-          throw new Exception(String.Format("Unable to load assembly named '{0}'", AssemblyName));
+          throw new ApplicationException(string.Format("Unable to load assembly named '{0}'", AssemblyName), e);
         }
 
         classType = assembly.GetType(ClassName, false, false);
         if (classType == null)
         {
-          throw new Exception(String.Format("Type '{0}' is not defined in assembly '{1}'", ClassName,
-                                                   AssemblyName));
+          throw new ApplicationException(string.Format("Type '{0}' is not defined in assembly '{1}'", ClassName, AssemblyName));
         }
       }
       return classType;
     }
 
-    public int CompareTo(Type compareTo)
+    public int CompareTo(Type other)
     {
-      return ToString().CompareTo(compareTo.ToString());
+      return CreateType().AssemblyQualifiedName.CompareTo(other.AssemblyQualifiedName);
     }
 
     public override string ToString()
     {
-      return AssemblyName + ":" + ClassName;
+      return CreateType().AssemblyQualifiedName;
     }
 
     private Type classType;

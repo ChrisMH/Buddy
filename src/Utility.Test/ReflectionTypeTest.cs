@@ -1,22 +1,101 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
 namespace Utility.Test
 {
   public class ReflectionTypeTest
   {
-    [Test]
-    public void CanCreateFromPackedString()
+    [TestCase("System.Data.SqlClient.SqlClientFactory, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+      "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+      "System.Data.SqlClient.SqlClientFactory")]
+    [TestCase("Npgsql.NpgsqlFactory, Npgsql", "Npgsql", "Npgsql.NpgsqlFactory")]
+    [TestCase("Utility.Test.TestType", null, "Utility.Test.TestType")]
+    public void CanCreateFromFullName(string fullName, string assemblyName, string className)
     {
-      var type = new ReflectionType( "TheAssembly:TheAssembly.TheNamespace.TheType" );
+      var result = new ReflectionType(fullName);
 
-      Assert.AreEqual( "TheAssembly", type.AssemblyName );
-      Assert.AreEqual( "TheAssembly.TheNamespace.TheType", type.ClassName );
-      
+      Assert.AreEqual(assemblyName, result.AssemblyName);
+      Assert.AreEqual(className, result.ClassName);
     }
 
+    [TestCase(typeof (System.Data.SqlClient.SqlClientFactory),
+      "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+      "System.Data.SqlClient.SqlClientFactory")]
+    [TestCase(typeof (Npgsql.NpgsqlFactory),
+      "Npgsql, Version=2.0.11.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7",
+      "Npgsql.NpgsqlFactory")]
+    [TestCase(typeof(TestType), "Utility.Test, ", "Utility.Test.TestType")]
+    public void CanCreateFromType(Type type, string assemblyName, string className)
+    {
+      var result = new ReflectionType(type);
+
+      Assert.That(result.AssemblyName.StartsWith(assemblyName));
+      Assert.AreEqual(className, result.ClassName);
+    }
+
+    [TestCase("")]
+    [TestCase("    ")]
+    public void CreateThrowsWhenFullNameIsInvalid(string fullName)
+    {
+      var e = Assert.Throws<ArgumentException>(() => new ReflectionType(fullName));
+      Assert.AreEqual("fullName", e.ParamName);
+      Console.WriteLine(e.Message);
+    }
+
+    [TestCase("System.Data.SqlClient.SqlClientFactory, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+      typeof(System.Data.SqlClient.SqlClientFactory))]
+    [TestCase("Npgsql.NpgsqlFactory, Npgsql",
+      typeof(Npgsql.NpgsqlFactory))]
+    [TestCase("Utility.Test.TestType", typeof(TestType))]
+    public void CanCreateType(string fullName, Type expectedType)
+    {
+      var type = new ReflectionType(fullName);
+      var result = type.CreateType();
+
+      Assert.AreEqual(expectedType, result);
+    }
+
+    [TestCase("TestType")]
+    [TestCase("System.Data.SqlClient.SqlClientFactory, System.Data")]
+    [TestCase("System.Data.SqlClient.BadTypeName, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+    public void CreateTypeThrowsWhenTypeCannotBeCreated(string fullName)
+    {
+      var type = new ReflectionType(fullName);
+      var e = Assert.Throws<ApplicationException>(() => type.CreateType());
+      Console.WriteLine(e.Message);
+    }
+    
+    [Test]
+    public void CanCreateInstanceWith0Parameters()
+    {
+      var type = new ReflectionType("Utility.Test.TestType");
+      var result = type.CreateObject();
+
+      Assert.IsInstanceOf(typeof(TestType), result);
+      Assert.IsNull(((TestType)result).P1);
+      Assert.IsNull(((TestType)result).P2);
+    }
+        
+    [Test]
+    public void CanCreateInstanceWith1Parameter()
+    {
+      var type = new ReflectionType("Utility.Test.TestType");
+      var result = type.CreateObject("Parameter1");
+
+      Assert.IsInstanceOf(typeof(TestType), result);
+      Assert.AreEqual("Parameter1", ((TestType)result).P1);
+      Assert.IsNull(((TestType)result).P2);
+    }
+    
+    [Test]
+    public void CanCreateInstanceWith2Parameters()
+    {
+      var type = new ReflectionType("Utility.Test.TestType");
+      var result = type.CreateObject("Parameter1", "Parameter2");
+
+      Assert.IsInstanceOf(typeof(TestType), result);
+      Assert.AreEqual("Parameter1", ((TestType)result).P1);
+      Assert.AreEqual("Parameter2", ((TestType)result).P2);
+    }
   }
 }
