@@ -20,5 +20,21 @@ namespace Utility.Test
 
       Assert.AreEqual(@"D:\DevL\Overview\Client\src\Client.Web", result);
     }
+
+    [Test]
+    public void PathIsRelative()
+    {
+      Assert.IsFalse(Path.IsRelative("C:\\Program Files"));
+      Assert.IsTrue(Path.IsRelative("..\\relative"));
+      Assert.IsTrue(Path.IsRelative("relative"));
+      Assert.IsTrue(Path.IsRelative("relative.txt"));
+    }
+
+    [Test]
+    public void PathIsRoot()
+    {
+      Assert.IsTrue(Path.IsRoot("C:\\"));
+      Assert.IsFalse(Path.IsRoot("..\\relative"));
+    }
   }
 }
