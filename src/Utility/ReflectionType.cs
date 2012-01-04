@@ -38,6 +38,12 @@ namespace Utility
                                                   null, parameters, null, null);
     }
 
+    public T CreateObject<T>(params object[] parameters)
+    {
+      return (T)CreateType().Assembly.CreateInstance(ClassName, false, BindingFlags.CreateInstance,
+                                                  null, parameters, null, null);
+    }
+
     public Type CreateType()
     {
       if (classType != null)

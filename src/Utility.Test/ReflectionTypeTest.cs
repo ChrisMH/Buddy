@@ -97,5 +97,15 @@ namespace Utility.Test
       Assert.AreEqual("Parameter1", ((TestType)result).P1);
       Assert.AreEqual("Parameter2", ((TestType)result).P2);
     }
+
+    [Test]
+    public void CanCreateInstanceReturningSpecificType()
+    {
+      var type = new ReflectionType("Utility.Test.TestType");
+      TestType result = type.CreateObject<TestType>();
+
+      Assert.That(result, Is.InstanceOf<TestType>());
+    }
+
   }
 }
