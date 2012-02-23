@@ -13,4 +13,10 @@
     <copyright>Copyright 2011</copyright>
     <tags>utility</tags>
   </metadata>
+  <files>
+    <file src="bin\Release\Utility.dll" target ="lib\net40"/>
+    <file src="bin\Release\Utility.pdb" target ="lib\net40"/>
+    <file src="bin\ReleaseSL5\Utility.dll" target ="lib\sl50"/>
+    <file src="bin\ReleaseSL5\Utility.pdb" target ="lib\sl50"/>
+  </files>
 </package>
