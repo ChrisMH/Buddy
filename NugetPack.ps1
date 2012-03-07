@@ -1,9 +1,10 @@
 # relative to script directory
 $srcRoot = '.\src'                       
+$nuspecRoot = '.\nuspec'
 
 # relative to $srcRoot
 [string[]] $buildFiles = 'Utility\Utility.csproj', 'Utility\UtilitySL5.csproj'  
-[string[]] $nuspecFiles = 'Utility\Utility.nuspec'
+[string[]] $nuspecFiles = 'Utility.nuspec'
 $versionFile = 'SharedAssemblyInfo.cs'
 
 $buildConfiguration = 'Release'
@@ -25,7 +26,7 @@ New-Path $outputPath
 
 foreach($nuspecFile in $nuspecFiles)
 {
-  New-Package (Resolve-Path(Join-Path $srcRoot $nuspecFile)) $version $outputPath
+  New-Package (Resolve-Path(Join-Path $nuspecRoot $nuspecFile)) $version $outputPath
 }
 
 Remove-Module BuildUtilities
