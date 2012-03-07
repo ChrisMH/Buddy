@@ -8,12 +8,9 @@ $outputPath = "$home\Dropbox\Packages"
 
 Import-Module BuildUtilities
 
-$versionFile = Resolve-Path $versionFile
-
-$version = Get-Version $versionFile
+$version = Get-Version (Resolve-Path $versionFile)
   
 New-Path $outputPath
-
 
 #foreach($buildFile in $buildFiles)
 #{
