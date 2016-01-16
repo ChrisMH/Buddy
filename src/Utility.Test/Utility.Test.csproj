@@ -69,7 +69,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{56650C3C-8BFB-4115-89D9-A4BCF5BA1A65}</Project>
-      <Name>Common</Name>
+      <Name>Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
