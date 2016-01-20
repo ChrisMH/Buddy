@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{68
 		..\nuspec\Utility.nuspec = ..\nuspec\Utility.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility45", "Utility\Utility45.csproj", "{56650C3C-8BFB-4115-89D9-A4BCF5BA1A65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility45", "Utility45\Utility45.csproj", "{56650C3C-8BFB-4115-89D9-A4BCF5BA1A65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility45.Test", "Utility.Test\Utility45.Test.csproj", "{8B838F01-206D-49C1-AFF5-7AA8C17E55F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility45.Test", "Utility45.Test\Utility45.Test.csproj", "{8B838F01-206D-49C1-AFF5-7AA8C17E55F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility451", "Utility\Utility451.csproj", "{593D7069-99B8-427A-8904-67DDD9B51847}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility451", "Utility451\Utility451.csproj", "{593D7069-99B8-427A-8904-67DDD9B51847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility452", "Utility\Utility452.csproj", "{54A891FD-219F-4DBA-8B22-B4DACCDAF339}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility452", "Utility452\Utility452.csproj", "{54A891FD-219F-4DBA-8B22-B4DACCDAF339}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
