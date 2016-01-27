@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Utility.Test
+namespace Buddy.Test
 {
     public class ReflectionTypeTest
     {
@@ -9,7 +9,7 @@ namespace Utility.Test
           "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
           "System.Data.SqlClient.SqlClientFactory")]
         [TestCase("Npgsql.NpgsqlFactory, Npgsql", "Npgsql", "Npgsql.NpgsqlFactory")]
-        [TestCase("Utility.Test.TestType", null, "Utility.Test.TestType")]
+        [TestCase("Buddy.Test.TestType", null, "Buddy.Test.TestType")]
         public void CanCreateFromFullName(string fullName, string assemblyName, string className)
         {
             var result = new ReflectionType(fullName);
@@ -21,7 +21,7 @@ namespace Utility.Test
         [TestCase(typeof(System.Data.SqlClient.SqlClientFactory),
           "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
           "System.Data.SqlClient.SqlClientFactory")]
-        [TestCase(typeof(TestType), "Utility.Test, ", "Utility.Test.TestType")]
+        [TestCase(typeof(TestType), "Buddy.Test, ", "Buddy.Test.TestType")]
         public void CanCreateFromType(Type type, string assemblyName, string className)
         {
             var result = new ReflectionType(type);
@@ -41,7 +41,7 @@ namespace Utility.Test
 
         [TestCase("System.Data.SqlClient.SqlClientFactory, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
           typeof(System.Data.SqlClient.SqlClientFactory))]
-        [TestCase("Utility.Test.TestType", typeof(TestType))]
+        [TestCase("Buddy.Test.TestType", typeof(TestType))]
         public void CanCreateType(string fullName, Type expectedType)
         {
             var type = new ReflectionType(fullName);
@@ -63,7 +63,7 @@ namespace Utility.Test
         [Test]
         public void CanCreateInstanceWith0Parameters()
         {
-            var type = new ReflectionType("Utility.Test.TestType");
+            var type = new ReflectionType("Buddy.Test.TestType");
             var result = type.CreateObject();
 
             Assert.IsInstanceOf(typeof(TestType), result);
@@ -74,7 +74,7 @@ namespace Utility.Test
         [Test]
         public void CanCreateInstanceWith1Parameter()
         {
-            var type = new ReflectionType("Utility.Test.TestType");
+            var type = new ReflectionType("Buddy.Test.TestType");
             var result = type.CreateObject("Parameter1");
 
             Assert.IsInstanceOf(typeof(TestType), result);
@@ -85,7 +85,7 @@ namespace Utility.Test
         [Test]
         public void CanCreateInstanceWith2Parameters()
         {
-            var type = new ReflectionType("Utility.Test.TestType");
+            var type = new ReflectionType("Buddy.Test.TestType");
             var result = type.CreateObject("Parameter1", "Parameter2");
 
             Assert.IsInstanceOf(typeof(TestType), result);
@@ -96,7 +96,7 @@ namespace Utility.Test
         [Test]
         public void CanCreateInstanceReturningSpecificType()
         {
-            var type = new ReflectionType("Utility.Test.TestType");
+            var type = new ReflectionType("Buddy.Test.TestType");
             TestType result = type.CreateObject<TestType>();
 
             Assert.That(result, Is.InstanceOf<TestType>());

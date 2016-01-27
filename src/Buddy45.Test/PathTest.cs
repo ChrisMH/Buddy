@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Utility.Test
+namespace Buddy.Test
 {
     public class PathTest
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Utility
+namespace Buddy
 {
   [Serializable]
   public class ReflectionType : IComparable<Type>

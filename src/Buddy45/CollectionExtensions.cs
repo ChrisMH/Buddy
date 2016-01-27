@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Utility
+namespace Buddy
 {
   /// <summary>
   ///   Extension methods for collection classes

@@ -6,4 +6,4 @@ Import-Module NugetUtilities
 
 $version = Get-Version (Join-Path $srcRoot $versionFile -Resolve)
 
-Push-Project Utility $srcRoot $version $outputPath
+Push-Project Buddy $srcRoot $version $outputPath

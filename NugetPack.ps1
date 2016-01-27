@@ -1,6 +1,7 @@
-[string[]] $buildFiles = '.\src\Utility\Utility.csproj', 
-                         '.\src\Utility\UtilitySL5.csproj'  
-[string[]] $nuspecFiles = '.\nuspec\Utility.nuspec'
+[string[]] $buildFiles = '.\src\Buddy\Buddy45.csproj', 
+                         '.\src\Buddy\Buddy451.csproj',  
+                         '.\src\Buddy\Buddy452.csproj'
+[string[]] $nuspecFiles = '.\nuspec\Buddy.nuspec'
 $versionFile = '.\src\SharedAssemblyInfo.cs'
 
 $buildConfiguration = 'Release'
