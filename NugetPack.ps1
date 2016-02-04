@@ -1,4 +1,5 @@
-[string[]] $buildFiles = '.\src\Buddy\Buddy45.csproj', 
+[string[]] $buildFiles = '.\src\Buddy\Buddy40.csproj', 
+                         '.\src\Buddy\Buddy45.csproj', 
                          '.\src\Buddy\Buddy451.csproj',  
                          '.\src\Buddy\Buddy452.csproj'
 [string[]] $nuspecFiles = '.\nuspec\Buddy.nuspec'
