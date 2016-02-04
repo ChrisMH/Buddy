@@ -5,6 +5,7 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{682AAC1F-0854-4771-AA14-1ACE8E890729}"
 	ProjectSection(SolutionItems) = preProject
+		..\nuspec\Buddy.Debug.nuspec = ..\nuspec\Buddy.Debug.nuspec
 		..\nuspec\Buddy.nuspec = ..\nuspec\Buddy.nuspec
 		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
 	EndProjectSection

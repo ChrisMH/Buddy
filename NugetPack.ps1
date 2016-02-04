@@ -1,12 +1,11 @@
-[string[]] $buildFiles = '.\src\Buddy\Buddy40.csproj', 
-                         '.\src\Buddy\Buddy45.csproj', 
-                         '.\src\Buddy\Buddy451.csproj',  
-                         '.\src\Buddy\Buddy452.csproj'
-[string[]] $nuspecFiles = '.\nuspec\Buddy.nuspec'
+[string[]] $buildFiles = '.\src\Buddy40\Buddy40.csproj', 
+                         '.\src\Buddy45\Buddy45.csproj', 
+                         '.\src\Buddy451\Buddy451.csproj',  
+                         '.\src\Buddy452\Buddy452.csproj'
+
 $versionFile = '.\src\SharedAssemblyInfo.cs'
 
-$buildConfiguration = 'Release'
-$outputPath = Join-Path $HOME "Dropbox\Packages"
+$outputPath = Join-Path $HOME 'Dropbox\Packages'
 
 Import-Module BuildUtilities
 
@@ -14,14 +13,14 @@ $version = Get-Version (Resolve-Path $versionFile)
   
 New-Path $outputPath
 
-#foreach($buildFile in $buildFiles)
-#{
-#  Invoke-Build (Resolve-Path $buildFile) $buildConfiguration
-#}
-
-foreach($nuspecFile in $nuspecFiles)
+foreach($buildFile in $buildFiles)
 {
-  New-Package (Resolve-Path $nuspecFile) $version $outputPath
+  Invoke-Build (Resolve-Path $buildFile) 'Debug'
+  Invoke-Build (Resolve-Path $buildFile) 'Release'
 }
+
+
+New-Package (Resolve-Path '.\nuspec\Buddy.nuspec') $version $outputPath
+New-Package (Resolve-Path '.\nuspec\Buddy.Debug.nuspec') "$version-debug" $outputPath
 
 Remove-Module BuildUtilities
