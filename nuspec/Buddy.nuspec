@@ -15,8 +15,12 @@
   </metadata>
   <files>
     <file src="..\src\Buddy40\bin\Release\Buddy.dll" target="lib\net40"/>
+    <file src="..\src\Buddy40\bin\Release\Buddy.pdb" target="lib\net40"/>
     <file src="..\src\Buddy45\bin\Release\Buddy.dll" target="lib\net45"/>
+    <file src="..\src\Buddy45\bin\Release\Buddy.pdb" target="lib\net45"/>
     <file src="..\src\Buddy451\bin\Release\Buddy.dll" target="lib\net451"/>
+    <file src="..\src\Buddy451\bin\Release\Buddy.pdb" target="lib\net451"/>
     <file src="..\src\Buddy452\bin\Release\Buddy.dll" target="lib\net452"/>
+    <file src="..\src\Buddy452\bin\Release\Buddy.pdb" target="lib\net452"/>
   </files>
 </package>
