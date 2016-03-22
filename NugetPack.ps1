@@ -1,7 +1,9 @@
 [string[]] $buildFiles = '.\src\Buddy40\Buddy40.csproj', 
                          '.\src\Buddy45\Buddy45.csproj', 
                          '.\src\Buddy451\Buddy451.csproj',  
-                         '.\src\Buddy452\Buddy452.csproj'
+                         '.\src\Buddy452\Buddy452.csproj',  
+                         '.\src\Buddy46\Buddy46.csproj',  
+                         '.\src\Buddy461\Buddy461.csproj'
 
 $versionFile = '.\src\SharedAssemblyInfo.cs'
 
