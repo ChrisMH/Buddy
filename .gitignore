@@ -1,6 +1,8 @@
 obj/
 bin/
 build/
+packages/
+out/
 *.csproj.user
 *.suo
 *.ReSharper.user
