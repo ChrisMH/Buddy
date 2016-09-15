@@ -33,7 +33,7 @@ $solution = "Buddy.sln"         #relative to $srcRoot
 [string[]] $packages = 
   "Buddy"
 
-$srcRoot = ".\src"                      # relative to script directory
+$srcRoot = "."                      # relative to script directory
 $outputPath = ".\out"                   # relative to script directory
 $nuspecPath = ".\nuspec"                # relative to script directory
 $versionFile = 'SharedAssemblyInfo.cs'  # relative to $srcRoot
