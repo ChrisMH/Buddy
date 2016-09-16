@@ -187,6 +187,9 @@
     <Compile Include="..\Buddy45\Utility\**\*.cs">
       <Link>Utility\%(RecursiveDir)%(FileName)</Link>
     </Compile>
+    <Compile Include="..\Buddy45\Web\**\*.cs">
+      <Link>Web\%(RecursiveDir)%(FileName)</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

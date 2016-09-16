@@ -65,6 +65,8 @@
     <Compile Include="Utility\ReflectionTypeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\TestType.cs" />
+    <Compile Include="Web\LinkBuilderTest.cs" />
+    <Compile Include="Web\ScriptBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
