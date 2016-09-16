@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Buddy.Utility;
+using NUnit.Framework;
 
-namespace Buddy.Test
+namespace Buddy.Test.Utility
 {
     public class PathTest
     {

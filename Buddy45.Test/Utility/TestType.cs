@@ -1,4 +1,4 @@
-﻿namespace Buddy.Test
+﻿namespace Buddy.Test.Utility
 {
     public class TestType
     {

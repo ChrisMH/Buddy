@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Utility")]
-[assembly: AssemblyDescription("Utility Classes")]
+[assembly: AssemblyTitle("Buddy")]
+[assembly: AssemblyDescription("Buddy Classes")]
 [assembly: AssemblyConfiguration("")]
 
-[assembly: InternalsVisibleTo("Utility.Test")]
+[assembly: InternalsVisibleTo("Buddy.Test")]

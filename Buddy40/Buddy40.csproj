@@ -175,17 +175,17 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Buddy45\CollectionExtensions.cs">
-      <Link>CollectionExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Buddy45\Path.cs">
-      <Link>Path.cs</Link>
-    </Compile>
     <Compile Include="..\Buddy45\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Buddy45\ReflectionType.cs">
-      <Link>ReflectionType.cs</Link>
+    <Compile Include="..\Buddy45\Collection\**\*.cs">
+      <Link>Collection\%(RecursiveDir)%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Buddy45\Enum\**\*.cs">
+      <Link>Enum\%(RecursiveDir)%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Buddy45\Utility\**\*.cs">
+      <Link>Utility\%(RecursiveDir)%(FileName)</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
