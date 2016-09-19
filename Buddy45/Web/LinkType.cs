@@ -11,6 +11,9 @@ namespace Buddy.Web
         Css,
 
         [Description("image/icon")]
-        Icon
+        Icon,
+
+        [Description("image/x-icon")]
+        XIcon
     }
 }

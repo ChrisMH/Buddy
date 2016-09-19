@@ -8,6 +8,12 @@ namespace Buddy.Web
         None,
 
         [Description("stylesheet")]
-        Stylesheet
+        Stylesheet,
+
+        [Description("icon")]
+        Icon,
+
+        [Description("shortcut icon")]
+        ShortcutIcon
     }
 }
