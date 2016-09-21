@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("Utility.Test")]
-[assembly: AssemblyDescription("Tests for the Utility assembly")]
+[assembly: AssemblyTitle("Buddy.Test")]
+[assembly: AssemblyDescription("Tests for the Buddy assembly")]
 [assembly: AssemblyConfiguration("")]
