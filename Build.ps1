@@ -10,8 +10,8 @@
 # -Pack 
 #   Package the projects 
 #
-# -Publish
-#   Publish the packages to the repository
+# -Push
+#   Push the packages to the repository
 #
 # No flags specified is equivalent to calling with all flags (-Build -Pack -Publish)
 #
@@ -19,7 +19,7 @@ if($args.Length -eq 0)
 {
     $args += "-Build"
     $args += "-Pack"
-    $args += "-Publish"
+    $args += "-Push"
 }
 $ErrorActionPreference = "Stop"
 
@@ -45,7 +45,6 @@ $nuspecPath = ".\nuspec"                # relative to script directory
 $versionFile = 'SharedAssemblyInfo.cs'  # relative to $srcRoot
 
 $repository = "https://nuget.org/api/v2/package"
-$apiKey = "f1d4a9f9-fceb-43ca-a972-538a4f7accdd"
 
 
 $buildCmd = "$env:windir\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
@@ -107,41 +106,39 @@ if($args -contains "-Clean")
 }
 
 
-# Package all projects
+# Pack all projects
 if($args -contains "-Pack")
 {   
     # Create the output path if it does not exist
     if((Test-Path $outputPath) -eq $False) { New-Item -Path $outputPath -ItemType directory | Out-Null }
 
-    Write-Host "`nPackaging to $outputPath...`n" -ForegroundColor Green
+    Write-Host "`nPacking to $outputPath...`n" -ForegroundColor Green
 
     foreach($package in $packages)
     {
         $nuspecFile = Join-Path $nuspecPath "$package.nuspec"
         if((Test-Path $nuspecFile) -eq $False) { throw "Could not find nuspec file for '$package'" }
         
-        Write-Host "`nPackaging $nuspecFile`n" -ForegroundColor Green
+        Write-Host "`nPacking $nuspecFile`n" -ForegroundColor Green
         
         &$nugetCmd pack $nuspecFile -Version $version -OutputDirectory $outputPath
     }
 }
 
 
-# Publish to repository
-if($args -contains "-Publish")
+# Push to repository
+if($args -contains "-Push")
 {
-    Write-Host "`nPublishing to $repository...`n" -ForegroundColor Green
+    Write-Host "`nPushing to $repository...`n" -ForegroundColor Green
     
-#    &$nugetCmd setApiKey $apiKey -Source $repository
-
     foreach($package in $packages)
     {
         $packageFile = Join-Path $outputPath "$package.$version.nupkg"
         if((Test-Path $packageFile) -eq $False) { throw "Could not find package file for '$package'" }
 
-        Write-Host "`nPublishing $packageFile...`n" -ForegroundColor Green
+        Write-Host "`nPushing $packageFile...`n" -ForegroundColor Green
 
-        &$nugetCmd push $packageFile $apiKey -Source $repository
+        &$nugetCmd push $packageFile -Source $repository
     }
 }
 
