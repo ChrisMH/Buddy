@@ -44,8 +44,8 @@ $packagesPath = ".\packages"            # relative to script directory
 $nuspecPath = ".\nuspec"                # relative to script directory
 $versionFile = 'SharedAssemblyInfo.cs'  # relative to $srcRoot
 
-$repository = "http://nuget.hogancode.com/Hogan/nuget"
-$apiKey = "Chris051010"
+$repository = "https://nuget.org/api/v2/package"
+$apiKey = "f1d4a9f9-fceb-43ca-a972-538a4f7accdd"
 
 
 $buildCmd = "$env:windir\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
@@ -132,7 +132,7 @@ if($args -contains "-Publish")
 {
     Write-Host "`nPublishing to $repository...`n" -ForegroundColor Green
     
-    &$nugetCmd setApiKey $apiKey -Source $repository
+#    &$nugetCmd setApiKey $apiKey -Source $repository
 
     foreach($package in $packages)
     {
@@ -141,7 +141,7 @@ if($args -contains "-Publish")
 
         Write-Host "`nPublishing $packageFile...`n" -ForegroundColor Green
 
-        &$nugetCmd push $packageFile -Source $repository
+        &$nugetCmd push $packageFile $apiKey -Source $repository
     }
 }
 
