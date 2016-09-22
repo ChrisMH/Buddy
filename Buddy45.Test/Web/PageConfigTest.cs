@@ -50,8 +50,8 @@ namespace Buddy.Test.Web
             version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"App\")) window.App={};" +
-                           "window.App.pageConfig={" +
+                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
+                           "window.app.pageConfig={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"," +
@@ -98,8 +98,8 @@ namespace Buddy.Test.Web
             version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"App\")) window.App={};" +
-                           "window.App.pageConfig={" +
+                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
+                           "window.app.pageConfig={" +
                            "userName:\"chogan\"," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +

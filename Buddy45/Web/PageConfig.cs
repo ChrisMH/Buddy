@@ -61,7 +61,7 @@ namespace Buddy.Web
         /// </summary>
         /// <param name="objectName">Name of the enclosing struct</param>
         /// <returns>Javascript</returns>
-        public string ToJavascript(string objectName = "App.pageConfig")
+        public string ToJavascript(string objectName = "app.pageConfig")
         {
             if (string.IsNullOrWhiteSpace(objectName))
                 throw new ArgumentException("objectName cannot be empty", nameof(objectName));
