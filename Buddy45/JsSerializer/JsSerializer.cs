@@ -15,10 +15,15 @@ namespace Buddy.JsSerializer
 
         public void Serialize(TextWriter writer, object source)
         {
+            if (source == null)
+            {
+                writer.Write("null");
+                return;
+            }
+
             var sourceType = source.GetType();
 
             if (sourceType == typeof(string)
-                || sourceType == typeof(string)
                 || sourceType == typeof(bool)
                 || sourceType == typeof(long)
                 || sourceType == typeof(ulong)
