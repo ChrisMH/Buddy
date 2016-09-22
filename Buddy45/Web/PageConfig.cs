@@ -16,7 +16,7 @@ namespace Buddy.Web
     /// </summary>
     public class PageConfig
     {
-        public PageConfig(string originUrl, string rootUrl, Assembly versionAssembly, bool debug)
+        public PageConfig(string originUrl, string rootUrl, Assembly versionAssembly)
         {
             OriginUrl = originUrl;
             RootUrl = rootUrl;
@@ -25,13 +25,11 @@ namespace Buddy.Web
                 var version = versionAssembly.GetName().Version.ToString();
                 Version = version.Substring(0, version.LastIndexOf('.'));
             }
-            Debug = debug;
         }
 
         public string OriginUrl { get; set; }
         public string RootUrl { get; set; }
         public string Version { get; set; }
-        public bool Debug { get; set; }
 
         /// <summary>
         /// Exports all properties as a JSON object

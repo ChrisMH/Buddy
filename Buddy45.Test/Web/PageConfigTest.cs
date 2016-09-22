@@ -10,14 +10,14 @@ namespace Buddy.Test.Web
         [Test]
         public void ExportsCorrectJson()
         {
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly(), true);
+            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
 
             var json = pageConfig.Json;
 
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
-            var expected = HttpUtility.HtmlEncode($"{{\"originUrl\":\"http://www.test.com/\",\"rootUrl\":\"http://www.test.com/Virtual\",\"version\":\"{version}\",\"debug\":true}}");
+            var expected = HttpUtility.HtmlEncode($"{{\"originUrl\":\"http://www.test.com/\",\"rootUrl\":\"http://www.test.com/Virtual\",\"version\":\"{version}\"}}");
 
             Assert.AreEqual(expected, json);
         }
@@ -25,7 +25,7 @@ namespace Buddy.Test.Web
         [Test]
         public void ExportsCorrectJsonInDerivedPageConfig()
         {
-            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly(), true) {UserName = "chogan"};
+            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly()) {UserName = "chogan"};
 
             var json = pageConfig.Json;
 
@@ -34,7 +34,7 @@ namespace Buddy.Test.Web
 
             var expected =
                 HttpUtility.HtmlEncode(
-                    $"{{\"userName\":\"chogan\",\"originUrl\":\"http://www.test.com/\",\"rootUrl\":\"http://www.test.com/Virtual\",\"version\":\"{version}\",\"debug\":true}}");
+                    $"{{\"userName\":\"chogan\",\"originUrl\":\"http://www.test.com/\",\"rootUrl\":\"http://www.test.com/Virtual\",\"version\":\"{version}\"}}");
 
             Assert.AreEqual(expected, json);
         }
@@ -42,7 +42,7 @@ namespace Buddy.Test.Web
         [Test]
         public void ExportsCorrectJavascript()
         {
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly(), true);
+            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
 
             var javascript = pageConfig.ToJavascript();
 
@@ -54,8 +54,7 @@ namespace Buddy.Test.Web
                            "window.app.pageConfig={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
-                           $"version:\"{version}\"," +
-                           "debug:true" +
+                           $"version:\"{version}\"" +
                            "};})();";
 
 
@@ -65,7 +64,7 @@ namespace Buddy.Test.Web
         [Test]
         public void ExportsCorrectNextedObjectJavascript()
         {
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly(), true);
+            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
 
             var javascript = pageConfig.ToJavascript("App.pageConfig.sectionConfig.lineConfig");
 
@@ -79,8 +78,7 @@ namespace Buddy.Test.Web
                            "window.App.pageConfig.sectionConfig.lineConfig={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
-                           $"version:\"{version}\"," +
-                           "debug:true" +
+                           $"version:\"{version}\"" +
                            "};})();";
 
 
@@ -90,7 +88,7 @@ namespace Buddy.Test.Web
         [Test]
         public void ExportsCorrectJavascriptInDerivedPageConfig()
         {
-            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly(), true) {UserName = "chogan"};
+            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly()) {UserName = "chogan"};
 
             var javascript = pageConfig.ToJavascript();
 
@@ -103,8 +101,7 @@ namespace Buddy.Test.Web
                            "userName:\"chogan\"," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
-                           $"version:\"{version}\"," +
-                           "debug:true" +
+                           $"version:\"{version}\"" +
                            "};})();";
 
             Assert.AreEqual(expected, javascript);
@@ -113,7 +110,7 @@ namespace Buddy.Test.Web
         [Test]
         public void ExportsCorrectJavascriptWhenContainsClass()
         {
-            var pageConfig = new ContainedClassPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly(), true)
+            var pageConfig = new ContainedClassPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly())
                 {ContainedClass = new ContainedClass("god", "1234567")};
 
             var javascript = pageConfig.ToJavascript();
@@ -125,8 +122,7 @@ namespace Buddy.Test.Web
                            "containedClass={password=\"god\",phoneNumber=\"1234567\"}," +
                            "originUrl=\"http://www.test.com/\"," +
                            "rootUrl=\"http://www.test.com/Virtual\"," +
-                           $"version=\"{version}\"," +
-                           "debug=true" +
+                           $"version=\"{version}\"" +
                            "};})(window.pageConfig=window.pageConfig||{});";
 
             Assert.AreEqual(expected, javascript);
@@ -135,8 +131,8 @@ namespace Buddy.Test.Web
 
         internal class DerivedPageConfig : PageConfig
         {
-            public DerivedPageConfig(string originUrl, string rootUrl, Assembly versionAssembly, bool debug)
-                : base(originUrl, rootUrl, versionAssembly, debug)
+            public DerivedPageConfig(string originUrl, string rootUrl, Assembly versionAssembly)
+                : base(originUrl, rootUrl, versionAssembly)
             {
             }
 
@@ -157,8 +153,8 @@ namespace Buddy.Test.Web
 
         internal class ContainedClassPageConfig : PageConfig
         {
-            public ContainedClassPageConfig(string originUrl, string rootUrl, Assembly versionAssembly, bool debug)
-                : base(originUrl, rootUrl, versionAssembly, debug)
+            public ContainedClassPageConfig(string originUrl, string rootUrl, Assembly versionAssembly)
+                : base(originUrl, rootUrl, versionAssembly)
             {
             }
 
