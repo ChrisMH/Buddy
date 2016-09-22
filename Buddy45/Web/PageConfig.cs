@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using Buddy.JsSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -35,6 +37,7 @@ namespace Buddy.Web
         /// Exports all properties as a JSON object
         /// </summary>
         [JsonIgnore]
+        [JsIgnore]
         public string Json
         {
             get
@@ -54,45 +57,56 @@ namespace Buddy.Web
         }
 
         /// <summary>
-        /// Export all public properties as Javascript
+        /// Export all public properties as Javascript in an object on window.
         /// </summary>
-        [JsonIgnore]
-        public string Javascript
+        /// <param name="objectName">Name of the enclosing struct</param>
+        /// <returns>Javascript</returns>
+        public string ToJavascript(string objectName = "App.pageConfig")
         {
-            get
+            if (string.IsNullOrWhiteSpace(objectName))
+                throw new ArgumentException("objectName cannot be empty", nameof(objectName));
+
+            var propertyPairs = new List<string>();
+
+            var properties = this.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance);
+            foreach (var property in properties)
             {
-                var sb = new StringBuilder();
+                if (property.GetCustomAttribute(typeof(JsIgnoreAttribute)) != null)
+                    continue;
 
-                sb.AppendLine("(function(pageConfig) {");
+                var propertyName = property.Name;
+                var firstChar = propertyName.Substring(0, 1);
+                propertyName = firstChar.ToLower() + propertyName.Substring(1);
 
-
-                var properties = this.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance);
-                foreach (var property in properties)
+                var propertyValue = property.GetValue(this).ToString();
+                if (property.PropertyType == typeof(string))
                 {
-                    if (property.GetCustomAttribute(typeof(JsonIgnoreAttribute)) != null)
-                        continue;
-
-                    var propertyName = property.Name;
-                    var firstChar = propertyName.Substring(0, 1);
-                    propertyName = firstChar.ToLower() + propertyName.Substring(1);
-
-                    var propertyValue = property.GetValue(this).ToString();
-                    if (property.PropertyType == typeof(string))
-                    {
-                        propertyValue = string.Format("\"{0}\"", propertyValue);
-                    }
-                    else if (property.PropertyType == typeof(bool))
-                    {
-                        propertyValue = Convert.ToBoolean(property.GetValue(this)) ? "true" : "false";
-                    }
-
-                    sb.AppendLine(string.Format("    {0} = {1}", propertyName, propertyValue));
+                    propertyValue = string.Format("\"{0}\"", propertyValue);
+                }
+                else if (property.PropertyType == typeof(bool))
+                {
+                    propertyValue = Convert.ToBoolean(property.GetValue(this)) ? "true" : "false";
                 }
 
-                sb.AppendLine("})(window.pageConfig = window.pageConfig || {});");
-
-                return sb.ToString();
+                propertyPairs.Add(string.Format("{0}:{1}", propertyName, propertyValue));
             }
+            
+            var sb = new StringBuilder();
+
+            sb.Append("(function(){");
+            
+            var subObjects = objectName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var objSoFar = "window";
+            for (var i = 0; i < subObjects.Length - 1; i++)
+            {
+                sb.AppendFormat("if(!{0}.hasOwnProperty(\"{1}\")) {0}.{1}={{}};", objSoFar, subObjects[i]);
+                objSoFar = string.Concat(objSoFar, ".", subObjects[i]);
+            }
+            sb.AppendFormat("window.{0}={{", objectName);
+            sb.Append(string.Join(",", propertyPairs));
+            sb.Append("};})();");
+
+            return sb.ToString();
         }
     }
 }
