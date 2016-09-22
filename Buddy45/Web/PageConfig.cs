@@ -64,47 +64,29 @@ namespace Buddy.Web
             if (string.IsNullOrWhiteSpace(objectName))
                 throw new ArgumentException("objectName cannot be empty", nameof(objectName));
 
-            var propertyPairs = new List<string>();
-
-            var properties = this.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance);
-            foreach (var property in properties)
+            var serialized = new StringBuilder();
+            using (var writer = new StringWriter(serialized))
             {
-                if (property.GetCustomAttribute(typeof(JsIgnoreAttribute)) != null)
-                    continue;
-
-                var propertyName = property.Name;
-                var firstChar = propertyName.Substring(0, 1);
-                propertyName = firstChar.ToLower() + propertyName.Substring(1);
-
-                var propertyValue = property.GetValue(this).ToString();
-                if (property.PropertyType == typeof(string))
-                {
-                    propertyValue = string.Format("\"{0}\"", propertyValue);
-                }
-                else if (property.PropertyType == typeof(bool))
-                {
-                    propertyValue = Convert.ToBoolean(property.GetValue(this)) ? "true" : "false";
-                }
-
-                propertyPairs.Add(string.Format("{0}:{1}", propertyName, propertyValue));
+                var serializer = new JsSerializer.JsSerializer();
+                serializer.Serialize(writer, this);
             }
             
-            var sb = new StringBuilder();
+            var javascript = new StringBuilder();
 
-            sb.Append("(function(){");
+            javascript.Append("(function(){");
             
             var subObjects = objectName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             var objSoFar = "window";
             for (var i = 0; i < subObjects.Length - 1; i++)
             {
-                sb.AppendFormat("if(!{0}.hasOwnProperty(\"{1}\")) {0}.{1}={{}};", objSoFar, subObjects[i]);
+                javascript.AppendFormat("if(!{0}.hasOwnProperty(\"{1}\")) {0}.{1}={{}};", objSoFar, subObjects[i]);
                 objSoFar = string.Concat(objSoFar, ".", subObjects[i]);
             }
-            sb.AppendFormat("window.{0}={{", objectName);
-            sb.Append(string.Join(",", propertyPairs));
-            sb.Append("};})();");
+            javascript.AppendFormat("window.{0}=", objectName);
+            javascript.Append(serialized);
+            javascript.Append(";})();");
 
-            return sb.ToString();
+            return javascript.ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Web;
 using Buddy.Web;
 using NUnit.Framework;
@@ -62,7 +63,7 @@ namespace Buddy.Test.Web
         }
 
         [Test]
-        public void ExportsCorrectNextedObjectJavascript()
+        public void ExportsCorrectNestedObjectNameJavascript()
         {
             var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
 
@@ -118,12 +119,14 @@ namespace Buddy.Test.Web
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
-            var expected = "(function(pageConfig){pageConfig={" +
-                           "containedClass={password=\"god\",phoneNumber=\"1234567\"}," +
-                           "originUrl=\"http://www.test.com/\"," +
-                           "rootUrl=\"http://www.test.com/Virtual\"," +
-                           $"version=\"{version}\"" +
-                           "};})(window.pageConfig=window.pageConfig||{});";
+            Console.WriteLine(javascript);
+            var expected = "(function(){" +
+                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
+                           "window.app.pageConfig={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
+                           "originUrl:\"http://www.test.com/\"," +
+                           "rootUrl:\"http://www.test.com/Virtual\"," +
+                           $"version:\"{version}\"" +
+                           "};})();";
 
             Assert.AreEqual(expected, javascript);
         }
