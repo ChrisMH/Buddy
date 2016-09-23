@@ -52,7 +52,7 @@ namespace Buddy.Test.Web
 
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"app\")) window.app={};" +
-                           "window.app.pageConfig={" +
+                           "window.app.config={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +
@@ -67,16 +67,16 @@ namespace Buddy.Test.Web
         {
             var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
 
-            var javascript = pageConfig.ToJavascript("App.pageConfig.sectionConfig.lineConfig");
+            var javascript = pageConfig.ToJavascript("App.config.sectionConfig.lineConfig");
 
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"App\")) window.App={};" +
-                           "if(!window.App.hasOwnProperty(\"pageConfig\")) window.App.pageConfig={};" +
-                           "if(!window.App.pageConfig.hasOwnProperty(\"sectionConfig\")) window.App.pageConfig.sectionConfig={};" +
-                           "window.App.pageConfig.sectionConfig.lineConfig={" +
+                           "if(!window.App.hasOwnProperty(\"config\")) window.App.config={};" +
+                           "if(!window.App.config.hasOwnProperty(\"sectionConfig\")) window.App.config.sectionConfig={};" +
+                           "window.App.config.sectionConfig.lineConfig={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +
@@ -98,7 +98,7 @@ namespace Buddy.Test.Web
 
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"app\")) window.app={};" +
-                           "window.app.pageConfig={" +
+                           "window.app.config={" +
                            "userName:\"chogan\"," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
@@ -122,7 +122,7 @@ namespace Buddy.Test.Web
             Console.WriteLine(javascript);
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"app\")) window.app={};" +
-                           "window.app.pageConfig={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
+                           "window.app.config={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +
