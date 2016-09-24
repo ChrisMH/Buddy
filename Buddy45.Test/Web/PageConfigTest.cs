@@ -51,8 +51,8 @@ namespace Buddy.Test.Web
             version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
-                           "window.app.config={" +
+                           "if(!window.hasOwnProperty(\"page\")) window.page={};" +
+                           "window.page.config={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +
@@ -97,8 +97,8 @@ namespace Buddy.Test.Web
             version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
-                           "window.app.config={" +
+                           "if(!window.hasOwnProperty(\"page\")) window.page={};" +
+                           "window.page.config={" +
                            "userName:\"chogan\"," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
@@ -121,8 +121,8 @@ namespace Buddy.Test.Web
 
             Console.WriteLine(javascript);
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
-                           "window.app.config={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
+                           "if(!window.hasOwnProperty(\"page\")) window.page={};" +
+                           "window.page.config={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +

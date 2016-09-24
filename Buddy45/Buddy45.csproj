@@ -189,6 +189,7 @@
     <Compile Include="Utility\Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ReflectionType.cs" />
+    <Compile Include="Web\TitleElem.cs" />
     <Compile Include="Web\HtmlBuilder.cs" />
     <Compile Include="Web\IHtmlElem.cs" />
     <Compile Include="Web\BaseElem.cs" />
