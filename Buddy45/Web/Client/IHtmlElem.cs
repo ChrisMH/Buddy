@@ -1,4 +1,4 @@
-﻿namespace Buddy.Web
+﻿namespace Buddy.Web.Client
 {
     public interface IHtmlElem
     {

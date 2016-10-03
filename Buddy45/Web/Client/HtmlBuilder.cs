@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Buddy.Web
+namespace Buddy.Web.Client
 {
     public class HtmlBuilder : List<IHtmlElem>, IHtmlElem
     

@@ -67,12 +67,12 @@
     <Compile Include="Utility\ReflectionTypeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\TestType.cs" />
-    <Compile Include="Web\TitleElemTest.cs" />
-    <Compile Include="Web\HtmlBuliderTest.cs" />
-    <Compile Include="Web\BaseElemTest.cs" />
-    <Compile Include="Web\LinkElemTest.cs" />
-    <Compile Include="Web\PageConfigTest.cs" />
-    <Compile Include="Web\ScriptElemTest.cs" />
+    <Compile Include="Web\Client\TitleElemTest.cs" />
+    <Compile Include="Web\Client\HtmlBuliderTest.cs" />
+    <Compile Include="Web\Client\BaseElemTest.cs" />
+    <Compile Include="Web\Client\LinkElemTest.cs" />
+    <Compile Include="Web\Client\PageConfigTest.cs" />
+    <Compile Include="Web\Client\ScriptElemTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using System.Web;
-using Buddy.Web;
+using Buddy.Web.Client;
 using NUnit.Framework;
 
-namespace Buddy.Test.Web
+namespace Buddy.Test.Web.Client
 {
     public class PageConfigTest
     {

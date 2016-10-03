@@ -9,7 +9,7 @@ using Buddy.JsSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Buddy.Web
+namespace Buddy.Web.Client
 {
     /// <summary>
     /// Base class for web page configuration information, exporting as a JSON object or Javascript

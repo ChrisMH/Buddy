@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Buddy.Web
+namespace Buddy.Web.Client
 {
     public enum ScriptType
     {

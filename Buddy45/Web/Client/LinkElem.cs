@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Buddy.Enum;
 
-namespace Buddy.Web
+namespace Buddy.Web.Client
 {
     public class LinkElem : IHtmlElem
     {
