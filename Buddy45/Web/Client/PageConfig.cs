@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -16,15 +15,11 @@ namespace Buddy.Web.Client
     /// </summary>
     public class PageConfig
     {
-        public PageConfig(string originUrl, string rootUrl, Assembly versionAssembly)
+        public PageConfig(string originUrl, string rootUrl, string version)
         {
             OriginUrl = originUrl;
             RootUrl = rootUrl;
-            if (versionAssembly != null)
-            {
-                var version = versionAssembly.GetName().Version.ToString();
-                Version = version.Substring(0, version.LastIndexOf('.'));
-            }
+            Version = version;
         }
 
         public string OriginUrl { get; set; }
