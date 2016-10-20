@@ -15,6 +15,10 @@ namespace Buddy.Web.Client
     /// </summary>
     public class PageConfig
     {
+        public PageConfig()
+        {
+        }
+
         public PageConfig(string originUrl, string rootUrl, string version)
         {
             OriginUrl = originUrl;

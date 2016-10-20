@@ -63,7 +63,7 @@ if($args -contains "-Build")
     
     #restore nuget packages before building
     Write-Host "`nRestoring packages for $solutionFile...`n" -ForegroundColor Green
-    &$nugetCmd restore noninteractive $solutionFile
+    &$nugetCmd restore $solutionFile
 
     Write-Host "`nBuilding all projects...`n" -ForegroundColor Green
 
