@@ -62,6 +62,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Enum\EnumExtensionsTest.cs" />
     <Compile Include="JsSerializer\JsSerializerTest.cs" />
     <Compile Include="Utility\PathTest.cs" />
     <Compile Include="Utility\ReflectionTypeTest.cs" />
