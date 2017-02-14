@@ -11,12 +11,13 @@ namespace Buddy.Test.Web.Client
         [Test]
         public void ExportsCorrectJson()
         {
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            version = version.Substring(0, version.LastIndexOf('.'));
+
+            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", version);
 
             var json = pageConfig.Json;
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = HttpUtility.HtmlEncode($"{{\"originUrl\":\"http://www.test.com/\",\"rootUrl\":\"http://www.test.com/Virtual\",\"version\":\"{version}\"}}");
 
@@ -26,13 +27,13 @@ namespace Buddy.Test.Web.Client
         [Test]
         public void ExportsCorrectJsonInDerivedPageConfig()
         {
-            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly()) {UserName = "chogan"};
-
-            var json = pageConfig.Json;
-
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
+            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", version) {UserName = "chogan"};
+
+            var json = pageConfig.Json;
+            
             var expected =
                 HttpUtility.HtmlEncode(
                     $"{{\"userName\":\"chogan\",\"originUrl\":\"http://www.test.com/\",\"rootUrl\":\"http://www.test.com/Virtual\",\"version\":\"{version}\"}}");
@@ -43,12 +44,13 @@ namespace Buddy.Test.Web.Client
         [Test]
         public void ExportsCorrectJavascript()
         {
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            version = version.Substring(0, version.LastIndexOf('.'));
+
+            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", version);
 
             var javascript = pageConfig.ToJavascript();
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            version = version.Substring(0, version.LastIndexOf('.'));
 
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"page\")) window.page={};" +
@@ -65,13 +67,13 @@ namespace Buddy.Test.Web.Client
         [Test]
         public void ExportsCorrectNestedObjectNameJavascript()
         {
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly());
-
-            var javascript = pageConfig.ToJavascript("App.config.sectionConfig.lineConfig");
-
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
+            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", version);
+
+            var javascript = pageConfig.ToJavascript("App.config.sectionConfig.lineConfig");
+            
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"App\")) window.App={};" +
                            "if(!window.App.hasOwnProperty(\"config\")) window.App.config={};" +
@@ -89,13 +91,13 @@ namespace Buddy.Test.Web.Client
         [Test]
         public void ExportsCorrectJavascriptInDerivedPageConfig()
         {
-            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly()) {UserName = "chogan"};
-
-            var javascript = pageConfig.ToJavascript();
-
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
+            var pageConfig = new DerivedPageConfig("http://www.test.com/", "http://www.test.com/Virtual", version) {UserName = "chogan"};
+
+            var javascript = pageConfig.ToJavascript();
+            
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"page\")) window.page={};" +
                            "window.page.config={" +
@@ -111,14 +113,14 @@ namespace Buddy.Test.Web.Client
         [Test]
         public void ExportsCorrectJavascriptWhenContainsClass()
         {
-            var pageConfig = new ContainedClassPageConfig("http://www.test.com/", "http://www.test.com/Virtual", Assembly.GetExecutingAssembly())
-                {ContainedClass = new ContainedClass("god", "1234567")};
-
-            var javascript = pageConfig.ToJavascript();
-
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
+            var pageConfig = new ContainedClassPageConfig("http://www.test.com/", "http://www.test.com/Virtual", version)
+                {ContainedClass = new ContainedClass("god", "1234567")};
+
+            var javascript = pageConfig.ToJavascript();
+            
             Console.WriteLine(javascript);
             var expected = "(function(){" +
                            "if(!window.hasOwnProperty(\"page\")) window.page={};" +
@@ -134,8 +136,8 @@ namespace Buddy.Test.Web.Client
 
         internal class DerivedPageConfig : PageConfig
         {
-            public DerivedPageConfig(string originUrl, string rootUrl, Assembly versionAssembly)
-                : base(originUrl, rootUrl, versionAssembly)
+            public DerivedPageConfig(string originUrl, string rootUrl, string version)
+                : base(originUrl, rootUrl, version)
             {
             }
 
@@ -156,8 +158,8 @@ namespace Buddy.Test.Web.Client
 
         internal class ContainedClassPageConfig : PageConfig
         {
-            public ContainedClassPageConfig(string originUrl, string rootUrl, Assembly versionAssembly)
-                : base(originUrl, rootUrl, versionAssembly)
+            public ContainedClassPageConfig(string originUrl, string rootUrl, string version)
+                : base(originUrl, rootUrl, version)
             {
             }
 

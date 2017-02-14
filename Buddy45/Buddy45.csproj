@@ -200,6 +200,7 @@
     <Compile Include="Web\Client\ScriptElem.cs" />
     <Compile Include="Web\Client\ScriptType.cs" />
     <Compile Include="Web\Service\ServiceResponse.cs" />
+    <Compile Include="Web\UrlQuery\UrlQuery.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
