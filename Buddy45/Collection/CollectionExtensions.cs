@@ -26,7 +26,7 @@ namespace Buddy.Collection
         /*
         public static string Join<T>(this IEnumerable<T> coll, Func<T, string> transformElement, string separator = null)
         {
-          var result = coll.Aggregate("", (current, c) => current + (transformElement.Invoke(c) + (separator ?? "")));
+          var result = coll.AggregateExpression("", (current, c) => current + (transformElement.Invoke(c) + (separator ?? "")));
     
           if (separator != null && !string.IsNullOrEmpty(separator))
           {

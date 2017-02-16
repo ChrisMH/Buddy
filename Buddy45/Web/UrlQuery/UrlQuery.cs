@@ -118,7 +118,7 @@ namespace Buddy.Web.UrlQuery
                     queryElements.Add(queryElement);
             }
 
-            //var encoded = Nancy.Helpers.HttpUtility.UrlEncode(queryElements.Aggregate((c, n) => string.Concat(c, "&", n)));
+            //var encoded = Nancy.Helpers.HttpUtility.UrlEncode(queryElements.AggregateExpression((c, n) => string.Concat(c, "&", n)));
             return queryElements.Aggregate((c, n) => string.Concat(c, "&", n));
         }
 

@@ -164,6 +164,10 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
@@ -189,6 +193,7 @@
     <Compile Include="Utility\Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ReflectionType.cs" />
+    <Compile Include="Utility\StringExtensions.cs" />
     <Compile Include="Web\Client\TitleElem.cs" />
     <Compile Include="Web\Client\HtmlBuilder.cs" />
     <Compile Include="Web\Client\IHtmlElem.cs" />
@@ -200,6 +205,13 @@
     <Compile Include="Web\Client\ScriptElem.cs" />
     <Compile Include="Web\Client\ScriptType.cs" />
     <Compile Include="Web\Service\ServiceResponse.cs" />
+    <Compile Include="Web\TabularQuery\AggregateExpression.cs" />
+    <Compile Include="Web\TabularQuery\FilterExpression.cs" />
+    <Compile Include="Web\TabularQuery\GroupExpression.cs" />
+    <Compile Include="Web\TabularQuery\QueryableExtensions.cs" />
+    <Compile Include="Web\TabularQuery\SortExpression.cs" />
+    <Compile Include="Web\TabularQuery\TabularQuery.cs" />
+    <Compile Include="Web\TabularQuery\TabularResponse.cs" />
     <Compile Include="Web\UrlQuery\UrlQuery.cs" />
   </ItemGroup>
   <ItemGroup>
