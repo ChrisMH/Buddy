@@ -17,6 +17,7 @@ namespace Buddy.Web.TabularQuery
             var result = new TabularResponse<T>();
 
             // Filter 
+            data = data.Filter(query.Filter);
 
             // Count and aggregate
             result.Count = data.Count();
@@ -90,6 +91,14 @@ namespace Buddy.Web.TabularQuery
                 aggregateObjectType.GetProperty(prop.Name).SetValue(aggregateObject, aggregateObjectProps[prop]);
 
             return aggregateObject;
+        }
+
+        public static IQueryable<T> Filter<T>(this IQueryable<T> data, FilterExpression filter)
+        {
+            if (filter == null)
+                return data;
+
+            return data.Where(filter.ToExpression());
         }
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> data, IEnumerable<SortExpression> sort)
