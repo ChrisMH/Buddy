@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Buddy.Web.UrlQuery;
+using NUnit.Framework;
 
-namespace Buddy.Test.Web.UrlQuery
+namespace Buddy45.Test.Web.UrlQuery
 {
     public class QueryConvertersTest
     {

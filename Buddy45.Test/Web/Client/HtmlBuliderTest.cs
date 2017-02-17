@@ -1,7 +1,7 @@
 ﻿using Buddy.Web.Client;
 using NUnit.Framework;
 
-namespace Buddy.Test.Web.Client
+namespace Buddy45.Test.Web.Client
 {
     public class HtmlBuliderTest
     {

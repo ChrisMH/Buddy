@@ -98,7 +98,9 @@ namespace Buddy.Web.TabularQuery
             if (filter == null)
                 return data;
 
-            return data.Where(filter.ToExpression());
+            var param = new List<object>();
+
+            return data.Where(filter.ToExpression(param), param.ToArray());
         }
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> data, IEnumerable<SortExpression> sort)

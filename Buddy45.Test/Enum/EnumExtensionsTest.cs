@@ -1,7 +1,7 @@
 ﻿using Buddy.Enum;
 using NUnit.Framework;
 
-namespace Buddy.Test.Enum
+namespace Buddy45.Test.Enum
 {
     public enum TestEnumType
     {

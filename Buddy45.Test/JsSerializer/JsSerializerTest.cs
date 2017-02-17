@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using NUnit.Framework;
 using Buddy.JsSerializer;
+using NUnit.Framework;
 
-namespace Buddy.Test.JsSerializer
+namespace Buddy45.Test.JsSerializer
 {
     public class JsSerializerTest
     {
