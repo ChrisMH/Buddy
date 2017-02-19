@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -18,15 +19,78 @@ namespace Buddy.Web.TabularQuery
     /// </summary>
     public class AggregateExpression
     {
-        public static string Average = "average";
-        public static string Count = "count";
-        public static string Max = "max";
-        public static string Min = "min";
-        public static string Sum = "sum";
+        public const string Average = "average";
+        public const string Count = "count";
+        public const string Max = "max";
+        public const string Min = "min";
+        public const string Sum = "sum";
 
         public string Field { get; set; }
         public string Aggregate { get; set; }
 
+        public static readonly IDictionary<string, string> Aggregates = new Dictionary<string, string>
+        {
+            {Average, "Average"},
+            {Count, "Count"},
+            {Max, "Max"},
+            {Min, "Min"},
+            {Sum, "Sum"},
+        };
+
+        /// <summary>
+        /// Convert to an expression suitable for calling by dynamic linq.
+        /// Note that the assumption is that this will be called as part of a grouping so that the
+        /// aggregate functions will work across the entire group like:
+        /// data.GroupBy(g => 1).Select(ToExpression(...))
+        /// </summary>
+        /// <param name="aggregates"></param>
+        /// <returns></returns>
+        public static string ToExpression(IEnumerable<AggregateExpression> aggregates)
+        {
+            var aggregatesByField = aggregates.GroupBy(a => a.Field);
+            var fieldExpressions = aggregatesByField.Select(g => ToFieldExpression(g.ToList())).ToList();
+            if (!fieldExpressions.Any())
+                return null;
+
+            return $"new ({fieldExpressions.Aggregate((c, n) => string.Concat(c, ", ", n))})";
+        }
+
+        /// <summary>
+        /// Generate aggregates for an individual field
+        /// </summary>
+        /// <param name="aggregates"></param>
+        /// <returns></returns>
+        private static string ToFieldExpression(List<AggregateExpression> aggregates)
+        {
+            if (aggregates == null || !aggregates.Any())
+                return null;
+
+            var expressions = aggregates.Select(ToAggregateExpression).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
+            if (!expressions.Any())
+                return null;
+
+            return $"new ({expressions.Aggregate((c, n) => string.Concat(c, ",", n))}) as {aggregates.First().Field}";
+        }
+
+        /// <summary>
+        /// Generate an individual aggregate for a field
+        /// </summary>
+        /// <param name="aggregate"></param>
+        /// <returns></returns>
+        private static string ToAggregateExpression(AggregateExpression aggregate)
+        {
+            if (aggregate == null || string.IsNullOrWhiteSpace(aggregate.Field) || string.IsNullOrWhiteSpace(aggregate.Aggregate))
+                return null;
+
+            if(aggregate.Aggregate == AggregateExpression.Count)
+                return $"it.{AggregateExpression.Aggregates[aggregate.Aggregate]}() as {aggregate.Aggregate}";
+            return $"{AggregateExpression.Aggregates[aggregate.Aggregate]}(it.{aggregate.Field.ToUpperCamelCase()}) as {aggregate.Aggregate}";
+        }
+
+        
+        /* This version is slightly slower and much more complicated.  Keeping it around in case it's useful someday since
+         * it was a pain in the ass to write.
+         * 
         /// <summary>
         /// Retrieves the appropriate aggreggate method for this aggregate expression
         /// </summary>
@@ -43,30 +107,30 @@ namespace Buddy.Web.TabularQuery
             
             switch (Aggregate)
             {
-                case "count":
+                case Count:
                 {
                     var getParameterTypes = Nullable.GetUnderlyingType(fieldType) != null ? CountNullableParameterTypes() : CountParameterTypes();
-                    var aggregateMethod = GetMethod(Aggregate.ToUpperCamelCase(), getParameterTypes, 1);
+                    var aggregateMethod = GetMethod(Aggregates[Aggregate], getParameterTypes, 1);
                     if (aggregateMethod != null)
                         return aggregateMethod.MakeGenericMethod(sourceType);
                     return null;
                 };
 
-                case "average":
-                case "sum":
+                case Average:
+                case Sum:
                 {
                     var getParameterTypes = AverageSumParameterTypes(fieldType);
-                    var aggregateMethod = GetMethod(Aggregate.ToUpperCamelCase(), getParameterTypes, 1);
+                    var aggregateMethod = GetMethod(Aggregates[Aggregate], getParameterTypes, 1);
                     if (aggregateMethod != null)
                         return aggregateMethod.MakeGenericMethod(sourceType);
                     return null;
                 }
 
-                case "min":
-                case "max":
+                case Min:
+                case Max:
                 {
                     var getParameterTypes = MinMaxParameterTypes();
-                    var aggregateMethod = GetMethod(Aggregate.ToUpperCamelCase(), getParameterTypes, 2);
+                    var aggregateMethod = GetMethod(Aggregates[Aggregate], getParameterTypes, 2);
                     if (aggregateMethod != null)
                         return aggregateMethod.MakeGenericMethod(sourceType, fieldType);
                     return null;
@@ -130,5 +194,7 @@ namespace Buddy.Web.TabularQuery
 					typeof (Expression<>).MakeGenericType(typeof (Func<,>).MakeGenericType(genericArguments[0], genericArguments[1]))
 				};
 		}
+
+        */
     }
 }

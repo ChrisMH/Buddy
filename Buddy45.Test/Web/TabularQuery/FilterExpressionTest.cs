@@ -318,13 +318,6 @@ namespace Buddy45.Test.Web.TabularQuery
             Assert.AreEqual(1, filtered.Count());
             Assert.AreEqual(0, filtered.First().Id);
         }
-
-
-        public class TestType
-        {
-            public int Id { get; set; }
-            public string StringProperty { get; set; }
-            public int? NullableIntProperty { get; set; }
-        }
+        
     }
 }

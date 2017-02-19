@@ -34,7 +34,50 @@ namespace Buddy.Web.TabularQuery
             return result;
         }
 
-        public static object Aggregate<T>(this IQueryable<T> data, IEnumerable<AggregateExpression> aggregate)
+        public static object Aggregate<T>(this IQueryable<T> data, List<AggregateExpression> aggregate)
+        {
+            if (aggregate == null || !aggregate.Any() || !data.Any())
+                return null;
+
+            var expression = AggregateExpression.ToExpression(aggregate);
+            if (string.IsNullOrWhiteSpace(expression))
+                return null;
+
+            return data.GroupBy(g => 1).Select(expression);
+        }
+
+        public static IQueryable<T> Filter<T>(this IQueryable<T> data, FilterExpression filter)
+        {
+            if (filter == null)
+                return data;
+            
+            var param = new List<object>();
+            var expression = filter.ToExpression<T>(param);
+
+            if (string.IsNullOrWhiteSpace(expression))
+                return data;
+            
+            return data.Where(expression, param.ToArray());
+        }
+
+        public static IQueryable<T> Sort<T>(this IQueryable<T> data, List<SortExpression> sort)
+        {
+            if (sort == null || !sort.Any())
+                return data;
+
+            var sortExpression = string.Join(",", sort.Select(s => s.ToDynamicLinqExpression()));
+
+            return data.OrderBy(sortExpression);
+        }
+
+        public static IQueryable<T> Page<T>(this IQueryable<T> data, int skip, int take)
+        {
+            return take > 0 ? data.Skip(skip).Take(take) : data;
+        }
+        
+        /* This version is slightly slower and much more complicated.  Keeping it around in case it's useful someday since
+         * it was a pain in the ass to write.
+        public static object Aggregate_old<T>(this IQueryable<T> data, List<AggregateExpression> aggregate)
         {
             if (aggregate == null || !aggregate.Any() || !data.Any())
                 return null;
@@ -92,34 +135,6 @@ namespace Buddy.Web.TabularQuery
 
             return aggregateObject;
         }
-
-        public static IQueryable<T> Filter<T>(this IQueryable<T> data, FilterExpression filter)
-        {
-            if (filter == null)
-                return data;
-            
-            var param = new List<object>();
-            var expression = filter.ToExpression<T>(param);
-
-            if (string.IsNullOrWhiteSpace(expression))
-                return data;
-            
-            return data.Where(expression, param.ToArray());
-        }
-
-        public static IQueryable<T> Sort<T>(this IQueryable<T> data, IEnumerable<SortExpression> sort)
-        {
-            if (sort == null || !sort.Any())
-                return data;
-
-            var sortExpression = string.Join(",", sort.Select(s => s.ToDynamicLinqExpression()));
-
-            return data.OrderBy(sortExpression);
-        }
-
-        public static IQueryable<T> Page<T>(this IQueryable<T> data, int skip, int take)
-        {
-            return take > 0 ? data.Skip(skip).Take(take) : data;
-        }
+        */
     }
 }
