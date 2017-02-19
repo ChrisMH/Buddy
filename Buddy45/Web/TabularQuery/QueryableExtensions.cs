@@ -36,7 +36,7 @@ namespace Buddy.Web.TabularQuery
 
         public static object Aggregate<T>(this IQueryable<T> data, IEnumerable<AggregateExpression> aggregate)
         {
-            if (aggregate == null || !aggregate.Any())
+            if (aggregate == null || !aggregate.Any() || !data.Any())
                 return null;
 
             var aggregateObjectProps = new Dictionary<DynamicProperty, object>();
@@ -97,10 +97,14 @@ namespace Buddy.Web.TabularQuery
         {
             if (filter == null)
                 return data;
-
+            
             var param = new List<object>();
+            var expression = filter.ToExpression<T>(param);
 
-            return data.Where(filter.ToExpression(param), param.ToArray());
+            if (string.IsNullOrWhiteSpace(expression))
+                return data;
+            
+            return data.Where(expression, param.ToArray());
         }
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> data, IEnumerable<SortExpression> sort)
