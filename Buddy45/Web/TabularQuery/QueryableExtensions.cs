@@ -43,7 +43,7 @@ namespace Buddy.Web.TabularQuery
             if (string.IsNullOrWhiteSpace(expression))
                 return null;
 
-            return data.GroupBy(g => 1).Select(expression);
+            return data.GroupBy(g => 1).Select(expression).Cast<object>().FirstOrDefault();
         }
 
         public static IQueryable<T> Filter<T>(this IQueryable<T> data, FilterExpression filter)
