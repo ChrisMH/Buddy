@@ -198,6 +198,9 @@
     <Compile Include="..\Buddy45\JsSerializer\**\*.cs">
       <Link>JsSerializer\%(RecursiveDir)%(FileName)</Link>
     </Compile>
+    <Compile Include="..\Buddy45\UI\**\*.cs">
+      <Link>UI\%(RecursiveDir)%(FileName)</Link>
+    </Compile>
     <Compile Include="..\Buddy45\Utility\**\*.cs">
       <Link>Utility\%(RecursiveDir)%(FileName)</Link>
     </Compile>
