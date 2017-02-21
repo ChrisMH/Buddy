@@ -10,5 +10,6 @@ namespace Buddy.Web.TabularQuery
         public List<AggregateExpression> Aggregate { get; set; }
         public FilterExpression Filter { get; set; }
         public List<SortExpression> Sort { get; set; }
+        public List<GroupExpression> Group { get; set; }
     }
 }

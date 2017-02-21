@@ -12,9 +12,9 @@ namespace Buddy.Web.TabularQuery
 {
     public static class QueryableExtensions
     {
-        public static TabularResponse<T> ApplyQuery<T>(this IQueryable<T> data, TabularQuery query)
+        public static TabularResponse ApplyQuery<T>(this IQueryable<T> data, TabularQuery query)
         {
-            var result = new TabularResponse<T>();
+            var result = new TabularResponse();
 
             // Filter 
             data = data.Filter(query.Filter);
@@ -29,7 +29,7 @@ namespace Buddy.Web.TabularQuery
             // Page
             data = data.Page(query.Skip, query.Take);
 
-            result.Data = data.ToList();
+            result.Items = data.ToList();
 
             return result;
         }
