@@ -8,6 +8,12 @@ namespace Buddy.UI.Kendo
         public string Name { get; set; }
     }
 
+    public class MultiSelectConfig<TId>
+    {
+        public List<TId> Defaults { get; set; }
+        public List<MultiSelectValue<TId>> Values { get; set;}
+    }
+
     public class MultiSelectConfig<TId, TValue>
         where TValue : MultiSelectValue<TId>
     {
