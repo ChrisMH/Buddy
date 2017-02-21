@@ -7,7 +7,6 @@ using Buddy.Utility;
 
 namespace Buddy.Web.UrlQuery
 {
-    
     /// <summary>
     /// Attribute used to decorate properties in query classes to allow serialization to/from query strings
     /// </summary>
@@ -16,16 +15,16 @@ namespace Buddy.Web.UrlQuery
     {
         public readonly string UrlKey;
         public IUrlConverter Converter { get; set; }
-        
+
         public UrlQueryParamAttribute(Type converterType, string urlKey)
         {
             UrlKey = urlKey;
 
-            if(!typeof(IUrlConverter).IsAssignableFrom(converterType))
+            if (!typeof(IUrlConverter).IsAssignableFrom(converterType))
                 throw new ArgumentException($"converterType is not an instance of IUrlConverter {converterType.Name}");
-            
+
             Converter = new ReflectionType(converterType).CreateObject<IUrlConverter>();
-            if(Converter == null)
+            if (Converter == null)
                 throw new ArgumentException($"Could not create instance of converterType ({converterType.Name})");
         }
     }
@@ -49,7 +48,7 @@ namespace Buddy.Web.UrlQuery
             var target = new ReflectionType(queryObjectType).CreateObject();
 
             var properties = target.GetType().GetProperties();
-            
+
             foreach (var pi in properties)
             {
                 var queryAttr = pi.GetCustomAttributes(true).FirstOrDefault(a => a is UrlQueryParamAttribute) as UrlQueryParamAttribute;
@@ -72,9 +71,9 @@ namespace Buddy.Web.UrlQuery
         /// <returns>The target object</returns>
         public static TQuery ToQueryObject<TQuery>(this string queryString)
         {
-            return (TQuery)queryString.ToQueryObject(typeof(TQuery));
+            return (TQuery) queryString.ToQueryObject(typeof(TQuery));
         }
-               
+
 
         /// <summary>
         /// Converts query parameters in an HttpRequest to a search criteria object. 
@@ -88,11 +87,11 @@ namespace Buddy.Web.UrlQuery
         {
             var pathQuery = request.RawUrl.Split(new[] {'?'}, StringSplitOptions.RemoveEmptyEntries);
             if (pathQuery.Length == 2)
-                return (TQuery)pathQuery[1].ToQueryObject(typeof(TQuery));
+                return (TQuery) pathQuery[1].ToQueryObject(typeof(TQuery));
             else
-                return (TQuery)string.Empty.ToQueryObject(typeof(TQuery));
+                return (TQuery) string.Empty.ToQueryObject(typeof(TQuery));
         }
-        
+
         /// <summary>
         /// Converts a search criteria object to a URL format collection of name/value pairs
         /// separated by an ampersand
@@ -114,7 +113,7 @@ namespace Buddy.Web.UrlQuery
                     continue;
 
                 var queryElement = queryAttr.Converter.ToUrl(query, pi, queryAttr);
-                if(!string.IsNullOrWhiteSpace(queryElement))
+                if (!string.IsNullOrWhiteSpace(queryElement))
                     queryElements.Add(queryElement);
             }
 
@@ -130,9 +129,9 @@ namespace Buddy.Web.UrlQuery
             foreach (var queryElement in queryElements)
             {
                 var keyValue = queryElement.Split(new[] {'='}, StringSplitOptions.RemoveEmptyEntries);
-                if(keyValue.Length == 1)
+                if (keyValue.Length == 1)
                     result.Add(keyValue[0], keyValue[0]);
-                else if(keyValue.Length == 2)
+                else if (keyValue.Length == 2)
                     result.Add(keyValue[0], keyValue[1]);
             }
             return result;
@@ -154,8 +153,6 @@ namespace Buddy.Web.UrlQuery
         //        .ToDictionary(p => ((UrlQueryParamAttribute) p.GetCustomAttributes(true).First(a => a is UrlQueryParamAttribute)).UrlKey,
         //                      p => new Tuple<PropertyInfo, IUrlConverter>(p, ((UrlQueryParamAttribute) p.GetCustomAttributes(true).First(a => a is UrlQueryParamAttribute)).Converter));
         //}
-
-
         /// <summary>
         /// Writes source properties to a target dictionary
         /// Does not write empty values
@@ -174,8 +171,6 @@ namespace Buddy.Web.UrlQuery
         //            target.Add(prop.Key, value);
         //    }
         //}
-
-
         /// <summary>
         ///     Writes query parameters from a source dictionary to the target object
         /// </summary>
@@ -184,7 +179,7 @@ namespace Buddy.Web.UrlQuery
         private static void ToQueryObject(IReadOnlyDictionary<string, string> source, object target)
         {
             var properties = target.GetType().GetProperties();
-            
+
             foreach (var pi in properties)
             {
                 var queryAttr = pi.GetCustomAttributes(true).FirstOrDefault(a => a is UrlQueryParamAttribute) as UrlQueryParamAttribute;
@@ -222,7 +217,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (pi.PropertyType != typeof(string))
                 throw new ArgumentException("Expecting a string type");
-            
+
             if (!source.ContainsKey(queryAttr.UrlKey))
             {
                 pi.SetValue(target, string.Empty);
@@ -239,7 +234,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (pi.PropertyType != typeof(int))
                 throw new ArgumentException("Expecting a Int32 type");
-            
+
             return $"{queryAttr.UrlKey}={pi.GetValue(source)}";
         }
 
@@ -255,7 +250,7 @@ namespace Buddy.Web.UrlQuery
             }
 
             int parsed = 0;
-            if(int.TryParse(source[queryAttr.UrlKey], out parsed))
+            if (int.TryParse(source[queryAttr.UrlKey], out parsed))
                 pi.SetValue(target, parsed);
             else
                 pi.SetValue(target, 0);
@@ -268,7 +263,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (pi.PropertyType != typeof(bool))
                 throw new ArgumentException("Expecting a bool type");
-            
+
             var value = Convert.ToBoolean(pi.GetValue(source)) ? "t" : "f";
             return $"{queryAttr.UrlKey}={value}";
         }
@@ -283,8 +278,8 @@ namespace Buddy.Web.UrlQuery
                 pi.SetValue(target, false);
                 return;
             }
-            
-            if(source[queryAttr.UrlKey] == "True" || source[queryAttr.UrlKey] == "true" || source[queryAttr.UrlKey] == "t")
+
+            if (source[queryAttr.UrlKey] == "True" || source[queryAttr.UrlKey] == "true" || source[queryAttr.UrlKey] == "t")
                 pi.SetValue(target, true);
             else
                 pi.SetValue(target, false);
@@ -301,7 +296,7 @@ namespace Buddy.Web.UrlQuery
             var value = Convert.ToDateTime(pi.GetValue(source));
             if (value == default(DateTime))
                 return "";
-            
+
             return $"{queryAttr.UrlKey}={Convert.ToDateTime(pi.GetValue(source)).ToUniversalTime():yyyy-MM-ddTHH:mm:ssZ}";
         }
 
@@ -326,7 +321,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (!pi.PropertyType.IsEnum)
                 throw new ArgumentException("Expecting an enumerated type");
-            
+
             return $"{queryAttr.UrlKey}={Convert.ToInt32(pi.GetValue(source))}";
         }
 
@@ -348,7 +343,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (!pi.PropertyType.IsEnum)
                 throw new ArgumentException("Expecting an enumerated type");
-            
+
             return $"{queryAttr.UrlKey}={pi.GetValue(source).ToString()}";
         }
 
@@ -378,7 +373,7 @@ namespace Buddy.Web.UrlQuery
             var value = pi.GetValue(source) as int[];
             if (value == null || value.Length == 0)
                 return "";
-            
+
             return $"{queryAttr.UrlKey}={value.Select(v => v.ToString()).Aggregate((c, n) => string.Concat(c, ";", n))}";
         }
 
@@ -386,7 +381,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (!typeof(int[]).IsAssignableFrom(pi.PropertyType))
                 throw new ArgumentException("Expecting an int[] type");
-            
+
             var result = new List<int>();
 
             if (!source.ContainsKey(queryAttr.UrlKey))
@@ -396,10 +391,10 @@ namespace Buddy.Web.UrlQuery
             }
 
             var elements = source[queryAttr.UrlKey].Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
-            foreach(var element in elements)
+            foreach (var element in elements)
             {
                 int intValue;
-                if(Int32.TryParse(element, out intValue))
+                if (Int32.TryParse(element, out intValue))
                     result.Add(intValue);
             }
 
@@ -420,7 +415,7 @@ namespace Buddy.Web.UrlQuery
             var value = pi.GetValue(source) as string[];
             if (value == null || value.Length == 0)
                 return "";
-            
+
             return $"{queryAttr.UrlKey}={value.Aggregate((c, n) => string.Concat(c, ";", n))}";
         }
 
@@ -428,7 +423,7 @@ namespace Buddy.Web.UrlQuery
         {
             if (!typeof(string[]).IsAssignableFrom(pi.PropertyType))
                 throw new ArgumentException("Expecting a string[] type");
-            
+
             var result = new List<string>();
 
             if (!source.ContainsKey(queryAttr.UrlKey))
@@ -445,7 +440,7 @@ namespace Buddy.Web.UrlQuery
 
 
     /// <summary>
-    /// Converts an enum array to/from a url value.  Uses a semicolon as the separator.
+    /// Converts an enum value array to/from a url value.  Uses a semicolon as the separator.
     /// </summary>
     public class EnumIntArrayConverter : IUrlConverter
     {
@@ -459,6 +454,46 @@ namespace Buddy.Web.UrlQuery
                 return "";
 
             return $"{queryAttr.UrlKey}={value.Cast<object>().Select(v => Convert.ToInt32(v).ToString()).Aggregate((c, n) => string.Concat(c, ";", n))}";
+        }
+
+        public void FromUrl(IReadOnlyDictionary<string, string> source, object target, PropertyInfo pi, UrlQueryParamAttribute queryAttr)
+        {
+            if (!pi.PropertyType.IsArray || !pi.PropertyType.GetElementType().IsEnum)
+                throw new ArgumentException("Expecting an Enum[] type");
+
+            if (!source.ContainsKey(queryAttr.UrlKey))
+            {
+                pi.SetValue(target, Array.CreateInstance(pi.PropertyType.GetElementType(), 0));
+                return;
+            }
+
+            var elements = source[queryAttr.UrlKey].Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+            var result = Array.CreateInstance(pi.PropertyType.GetElementType(), elements.Length);
+
+            for (var i = 0; i < elements.Length; i++)
+            {
+                result.SetValue(Convert.ChangeType(System.Enum.Parse(pi.PropertyType.GetElementType(), elements[i]), pi.PropertyType.GetElementType()), i);
+            }
+
+            pi.SetValue(target, result);
+        }
+    }
+
+    /// <summary>
+    /// Converts an enum value array to/from a url value.  Uses a semicolon as the separator.
+    /// </summary>
+    public class EnumStringArrayConverter : IUrlConverter
+    {
+        public string ToUrl(object source, PropertyInfo pi, UrlQueryParamAttribute queryAttr)
+        {
+            if (!pi.PropertyType.IsArray || !pi.PropertyType.GetElementType().IsEnum)
+                throw new ArgumentException("Expecting an Enum[] type");
+
+            var value = pi.GetValue(source) as Array;
+            if (value == null || value.Length == 0)
+                return "";
+
+            return $"{queryAttr.UrlKey}={value.Cast<object>().Select(v => v.ToString()).Aggregate((c, n) => string.Concat(c, ";", n))}";
         }
 
         public void FromUrl(IReadOnlyDictionary<string, string> source, object target, PropertyInfo pi, UrlQueryParamAttribute queryAttr)
@@ -483,5 +518,4 @@ namespace Buddy.Web.UrlQuery
             pi.SetValue(target, result);
         }
     }
-
 }

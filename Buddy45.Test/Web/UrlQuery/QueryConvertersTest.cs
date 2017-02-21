@@ -367,9 +367,53 @@ namespace Buddy45.Test.Web.UrlQuery
 
 
         [TestCase("", new TestEnum[] {})]
+        [TestCase("esm=V1", new TestEnum[] {TestEnum.V1})]
+        [TestCase("esm=V2;V0;V1", new TestEnum[] {TestEnum.V2, TestEnum.V0, TestEnum.V1})]
+        public void CanConvert_EnumIntArray_FromUrl(string value, int[] expected)
+        {
+            var testClass = new TestClass();
+            var testSource = new Dictionary<string, string>();
+            if(!string.IsNullOrWhiteSpace(value))
+                testSource.Add(value.Split('=')[0], value.Split('=')[1]);
+            
+            var pi = testClass.GetType().GetProperties().First(p => p.Name == "EnumStringArrayMember");
+            Assert.NotNull(pi);
+
+            var queryAttr = pi.GetCustomAttributes(true).FirstOrDefault(a => a is UrlQueryParamAttribute) as UrlQueryParamAttribute;
+            Assert.NotNull(queryAttr);
+            Assert.True(queryAttr.Converter is EnumStringArrayConverter);
+
+            queryAttr.Converter.FromUrl(testSource, testClass, pi, queryAttr);
+
+            Assert.AreEqual(expected, testClass.EnumStringArrayMember);
+        }
+
+
+        
+        [TestCase(new TestEnum[] {}, "")]
+        [TestCase(new TestEnum[] {TestEnum.V1}, "esm=V1")]
+        [TestCase(new TestEnum[] {TestEnum.V0, TestEnum.V2, TestEnum.V1}, "esm=V0;V2;V1")]
+        public void CanConvert_EnumStringArray_ToUrl(TestEnum[] value, string expected)
+        {
+            var testClass = new TestClass {EnumStringArrayMember = value};
+            
+            var pi = testClass.GetType().GetProperties().First(p => p.Name == "EnumStringArrayMember");
+            Assert.NotNull(pi);
+
+            var queryAttr = pi.GetCustomAttributes(true).FirstOrDefault(a => a is UrlQueryParamAttribute) as UrlQueryParamAttribute;
+            Assert.NotNull(queryAttr);
+            Assert.True(queryAttr.Converter is EnumStringArrayConverter);
+
+            var result = queryAttr.Converter.ToUrl(testClass, pi, queryAttr);
+
+            Assert.AreEqual(expected, result);
+        }
+
+
+        [TestCase("", new TestEnum[] {})]
         [TestCase("eam=1", new TestEnum[] {TestEnum.V1})]
         [TestCase("eam=2;0;1", new TestEnum[] {TestEnum.V2, TestEnum.V0, TestEnum.V1})]
-        public void CanConvert_EnumIntArray_FromUrl(string value, int[] expected)
+        public void CanConvert_EnumStringArray_FromUrl(string value, int[] expected)
         {
             var testClass = new TestClass();
             var testSource = new Dictionary<string, string>();
@@ -387,6 +431,7 @@ namespace Buddy45.Test.Web.UrlQuery
 
             Assert.AreEqual(expected, testClass.EnumIntArrayMember);
         }
+
 
         public enum TestEnum
         {
@@ -423,6 +468,9 @@ namespace Buddy45.Test.Web.UrlQuery
 
             [UrlQueryParam(typeof(EnumIntArrayConverter), "eam")]
             public TestEnum[] EnumIntArrayMember { get; set; }
+            
+            [UrlQueryParam(typeof(EnumStringArrayConverter), "esm")]
+            public TestEnum[] EnumStringArrayMember { get; set; }
         }
     }
 }
