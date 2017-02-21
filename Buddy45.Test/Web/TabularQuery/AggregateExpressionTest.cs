@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Buddy.Web.TabularQuery;
 using System.Linq.Dynamic;
-using Buddy.Test.TestData;
-using Buddy.Utility;
+using Buddy.Test.PerformanceTestData;
 using NUnit.Framework;
 
 namespace Buddy45.Test.Web.TabularQuery
@@ -79,25 +78,26 @@ namespace Buddy45.Test.Web.TabularQuery
         [Test]
         public void ComplexAggregate()
         {
-            var data = PerformanceSnapshot.Load().AsQueryable();
+            var data = PerformanceEntry.Load().AsQueryable();
             
             var aggregates = new List<AggregateExpression>
             {
                 new AggregateExpression {Field = "customerName", Aggregate = AggregateExpression.Count},
-                new AggregateExpression {Field = "backlog", Aggregate = AggregateExpression.Sum},
-                new AggregateExpression {Field = "backlog", Aggregate = AggregateExpression.Average},
-                new AggregateExpression {Field = "backlog", Aggregate = AggregateExpression.Max},
-                new AggregateExpression {Field = "backlog", Aggregate = AggregateExpression.Min},
+                new AggregateExpression {Field = "databaseConnections", Aggregate = AggregateExpression.Sum},
+                new AggregateExpression {Field = "databaseConnections", Aggregate = AggregateExpression.Average},
+                new AggregateExpression {Field = "databaseConnections", Aggregate = AggregateExpression.Max},
+                new AggregateExpression {Field = "databaseConnections", Aggregate = AggregateExpression.Min},
+                new AggregateExpression {Field = "totalDatabaseConnections", Aggregate = AggregateExpression.Sum},
+                new AggregateExpression {Field = "totalDatabaseConnections", Aggregate = AggregateExpression.Average},
+                new AggregateExpression {Field = "totalDatabaseConnections", Aggregate = AggregateExpression.Max},
+                new AggregateExpression {Field = "totalDatabaseConnections", Aggregate = AggregateExpression.Min},
                 new AggregateExpression {Field = "availableMBytes", Aggregate = AggregateExpression.Sum},
                 new AggregateExpression {Field = "availableMBytes", Aggregate = AggregateExpression.Average},
                 new AggregateExpression {Field = "availableMBytes", Aggregate = AggregateExpression.Max},
                 new AggregateExpression {Field = "availableMBytes", Aggregate = AggregateExpression.Min},
                 new AggregateExpression {Field = "pctPagingFileUsage", Aggregate = AggregateExpression.Sum},
                 new AggregateExpression {Field = "pctPagingFileUsage", Aggregate = AggregateExpression.Max},
-                new AggregateExpression {Field = "pctPagingFileUsage", Aggregate = AggregateExpression.Min},
-                new AggregateExpression {Field = "totalReceived", Aggregate = AggregateExpression.Average},
-                new AggregateExpression {Field = "totalReceived", Aggregate = AggregateExpression.Max},
-                new AggregateExpression {Field = "totalReceived", Aggregate = AggregateExpression.Min}
+                new AggregateExpression {Field = "pctPagingFileUsage", Aggregate = AggregateExpression.Min}
             };
             
             var sw = new Stopwatch();
@@ -106,7 +106,7 @@ namespace Buddy45.Test.Web.TabularQuery
             sw.Stop();
             Console.WriteLine($"{nameof(ComplexAggregate)}: {sw.ElapsedMilliseconds}ms");
             /*
-            var data = PerformanceSnapshot.Load().AsQueryable();
+            var data = PerformanceEntry.Load().AsQueryable();
             
             var aggregate = new List<AggregateExpression>
             {

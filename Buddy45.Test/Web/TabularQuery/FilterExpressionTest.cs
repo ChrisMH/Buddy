@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Buddy.Test.TestData;
+using Buddy.Test.PerformanceTestData;
 using Buddy.Utility;
 using Buddy.Web.TabularQuery;
 using NUnit.Framework;
@@ -40,44 +40,44 @@ namespace Buddy45.Test.Web.TabularQuery
         /// <param name="fieldName"></param>
         /// <param name="oper"></param>
         /// <returns></returns>
-        private Expression<Func<PerformanceSnapshot, bool>> GetComparison(string fieldName, string oper, object value)
+        private Expression<Func<PerformanceEntry, bool>> GetComparison(string fieldName, string oper, object value)
         {
-            var lmdParam = Expression.Parameter(typeof(PerformanceSnapshot), "p");
+            var lmdParam = Expression.Parameter(typeof(PerformanceEntry), "p");
 
             switch (oper)
             {
                 case FilterExpression.Eq:
                     // p => p.<fieldName> == <value>
-                    return Expression.Lambda<Func<PerformanceSnapshot, bool>>(
+                    return Expression.Lambda<Func<PerformanceEntry, bool>>(
                         Expression.Equal(Expression.Property(lmdParam, fieldName.ToUpperCamelCase()),
                             Expression.Constant(value)), lmdParam);
                 case FilterExpression.Neq:
                     // p => p.<fieldName> != <value>
-                    return Expression.Lambda<Func<PerformanceSnapshot, bool>>(
+                    return Expression.Lambda<Func<PerformanceEntry, bool>>(
                         Expression.NotEqual(Expression.Property(lmdParam, fieldName.ToUpperCamelCase()),
                             Expression.Constant(value)), lmdParam);
 
                 case FilterExpression.Lt:
                     // p => p.<fieldName> < <value>
-                    return Expression.Lambda<Func<PerformanceSnapshot, bool>>(
+                    return Expression.Lambda<Func<PerformanceEntry, bool>>(
                         Expression.LessThan(Expression.Property(lmdParam, fieldName.ToUpperCamelCase()),
                             Expression.Constant(value)), lmdParam);
 
                 case FilterExpression.Lte:
                     // p => p.<fieldName> <= <value>
-                    return Expression.Lambda<Func<PerformanceSnapshot, bool>>(
+                    return Expression.Lambda<Func<PerformanceEntry, bool>>(
                         Expression.LessThanOrEqual(Expression.Property(lmdParam, fieldName.ToUpperCamelCase()),
                             Expression.Constant(value)), lmdParam);
 
                 case FilterExpression.Gt:
                     // p => p.<fieldName> > <value>
-                    return Expression.Lambda<Func<PerformanceSnapshot, bool>>(
+                    return Expression.Lambda<Func<PerformanceEntry, bool>>(
                         Expression.GreaterThan(Expression.Property(lmdParam, fieldName.ToUpperCamelCase()),
                             Expression.Constant(value)), lmdParam);
 
                 case FilterExpression.Gte:
                     // p => p.<fieldName> >= <value>
-                    return Expression.Lambda<Func<PerformanceSnapshot, bool>>(
+                    return Expression.Lambda<Func<PerformanceEntry, bool>>(
                         Expression.GreaterThanOrEqual(Expression.Property(lmdParam, fieldName.ToUpperCamelCase()),
                             Expression.Constant(value)), lmdParam);
 
@@ -111,36 +111,36 @@ namespace Buddy45.Test.Web.TabularQuery
         }
 
         [TestCase("customerName", FilterExpression.Eq)]
-        [TestCase("backlog", FilterExpression.Eq)]
+        [TestCase("availableMBytes", FilterExpression.Eq)]
         [TestCase("pctPagingFileUsage", FilterExpression.Eq)]
         [TestCase("statTime", FilterExpression.Eq)]
         [TestCase("customerName", FilterExpression.Neq)]
-        [TestCase("backlog", FilterExpression.Neq)]
+        [TestCase("availableMBytes", FilterExpression.Neq)]
         [TestCase("pctPagingFileUsage", FilterExpression.Neq)]
         [TestCase("statTime", FilterExpression.Neq)]
-        [TestCase("backlog", FilterExpression.Lt)]
+        [TestCase("availableMBytes", FilterExpression.Lt)]
         [TestCase("pctPagingFileUsage", FilterExpression.Lt)]
         [TestCase("statTime", FilterExpression.Lt)]
-        [TestCase("backlog", FilterExpression.Lte)]
+        [TestCase("availableMBytes", FilterExpression.Lte)]
         [TestCase("pctPagingFileUsage", FilterExpression.Lte)]
         [TestCase("statTime", FilterExpression.Lte)]
-        [TestCase("backlog", FilterExpression.Gt)]
+        [TestCase("availableMBytes", FilterExpression.Gt)]
         [TestCase("pctPagingFileUsage", FilterExpression.Gt)]
         [TestCase("statTime", FilterExpression.Gt)]
-        [TestCase("backlog", FilterExpression.Gte)]
+        [TestCase("availableMBytes", FilterExpression.Gte)]
         [TestCase("pctPagingFileUsage", FilterExpression.Gte)]
         [TestCase("statTime", FilterExpression.Gte)]
         public void SingleComparisonFilter(string fieldName, string oper)
         {
-            var data = PerformanceSnapshot.Load().AsQueryable();
+            var data = PerformanceEntry.Load().AsQueryable();
 
             // Build a grouping to pull out a distinct value to use for the filter
-            var lmdParam = Expression.Parameter(typeof(PerformanceSnapshot), "p");
+            var lmdParam = Expression.Parameter(typeof(PerformanceEntry), "p");
 
             // p => p.<fieldName>
-            var lmdAccessor = Expression.Lambda<Func<PerformanceSnapshot, object>>(
+            var lmdAccessor = Expression.Lambda<Func<PerformanceEntry, object>>(
                 Expression.Convert(
-                    Expression.MakeMemberAccess(lmdParam, typeof(PerformanceSnapshot).GetProperty(fieldName.ToUpperCamelCase())),
+                    Expression.MakeMemberAccess(lmdParam, typeof(PerformanceEntry).GetProperty(fieldName.ToUpperCamelCase())),
                     typeof(object)),
                 lmdParam);
 
@@ -163,7 +163,7 @@ namespace Buddy45.Test.Web.TabularQuery
             };
 
             var param = new List<object>();
-            Console.WriteLine(filter.ToExpression<PerformanceSnapshot>(param));
+            Console.WriteLine(filter.ToExpression<PerformanceEntry>(param));
 
             var result = data.Filter(filter);
 

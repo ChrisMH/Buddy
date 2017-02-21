@@ -32,8 +32,10 @@ namespace Buddy.UI.Kendo
         public readonly string Aggregate;
         public readonly string FooterHeader;
         public readonly string Type;
+        public readonly bool Hidden;
 
-        public GridAttribute(string title, string width, string format = null, string aggregate = null, string footerHeader = null, string type = null)
+        public GridAttribute(string title, string width, string format = null, 
+            string aggregate = null, string footerHeader = null, string type = null, bool hidden = false)
         {
             Title = title;
             Width = width;
@@ -41,6 +43,7 @@ namespace Buddy.UI.Kendo
             Aggregate = aggregate;
             FooterHeader = footerHeader;
             Type = type;
+            Hidden = hidden;
         }
     }
 
@@ -64,7 +67,8 @@ namespace Buddy.UI.Kendo
                     Aggregate = attr.Aggregate,
                     FooterHeader = attr.FooterHeader,
                     Field = property.Name.ToLowerCamelCase(),
-                    Type = string.IsNullOrWhiteSpace(attr.Type) ? GetJsType(property) : attr.Type
+                    Type = string.IsNullOrWhiteSpace(attr.Type) ? GetJsType(property) : attr.Type,
+                    Hidden = attr.Hidden
                 });
             }
 
