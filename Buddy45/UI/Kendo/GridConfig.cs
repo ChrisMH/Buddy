@@ -84,7 +84,7 @@ namespace Buddy.UI.Kendo
                 return "boolean";
 
             if (property.PropertyType == typeof(DateTime))
-                return "Date";
+                return "date";
 
 
             return "number";
