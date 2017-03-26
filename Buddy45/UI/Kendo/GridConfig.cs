@@ -14,13 +14,60 @@ namespace Buddy.UI.Kendo
 
     public class GridColumn
     {
+        /// <summary>
+        /// The column's data field
+        /// </summary>
         public string Field { get; set; }
+
+        /// <summary>
+        /// The column title
+        /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// The column data type
+        /// </summary>
         public string Type { get; set; }
+
+        /// <summary>
+        /// The action that should be taken when clicking on the column
+        /// 
+        /// Typical values: hyperlink, click
+        /// </summary>
+        public string Action { get; set; }
+
+        /// <summary>
+        /// Width of the column
+        /// </summary>
         public string Width { get; set; }
+
+        /// <summary>
+        /// Format for column data
+        /// </summary>
         public string Format { get; set; }
+
+        /// <summary>
+        /// Text alignment for the column values
+        /// 
+        /// Typical values: left, center, right
+        /// </summary>
+        public string Align { get; set; }
+
+        /// <summary>
+        /// Aggregate calculation for column data
+        /// 
+        /// Typical values: count, sum, average
+        /// </summary>
         public string Aggregate { get; set; }
+
+        /// <summary>
+        /// Header for the aggregate footer
+        /// </summary>
         public string FooterHeader { get; set; }
+        
+        /// <summary>
+        /// Whether the column should be shown
+        /// </summary>
         public bool Hidden { get; set; }
     }
 
@@ -32,10 +79,19 @@ namespace Buddy.UI.Kendo
         public readonly string Aggregate;
         public readonly string FooterHeader;
         public readonly string Type;
+        public readonly string Action;
+        public readonly string Align;
         public readonly bool Hidden;
 
-        public GridAttribute(string title, string width, string format = null, 
-            string aggregate = null, string footerHeader = null, string type = null, bool hidden = false)
+        public GridAttribute(string title = null, 
+            string width = null, 
+            string format = null, 
+            string aggregate = null, 
+            string footerHeader = null, 
+            string type = null, 
+            string action = null,
+            string align = null,
+            bool hidden = false)
         {
             Title = title;
             Width = width;
@@ -43,6 +99,8 @@ namespace Buddy.UI.Kendo
             Aggregate = aggregate;
             FooterHeader = footerHeader;
             Type = type;
+            Action = action;
+            Align = align;
             Hidden = hidden;
         }
     }
@@ -68,6 +126,8 @@ namespace Buddy.UI.Kendo
                     FooterHeader = attr.FooterHeader,
                     Field = property.Name.ToLowerCamelCase(),
                     Type = string.IsNullOrWhiteSpace(attr.Type) ? GetJsType(property) : attr.Type,
+                    Action = attr.Action,
+                    Align = attr.Align,
                     Hidden = attr.Hidden
                 });
             }
@@ -85,8 +145,7 @@ namespace Buddy.UI.Kendo
 
             if (property.PropertyType == typeof(DateTime))
                 return "date";
-
-
+            
             return "number";
         }
     }
