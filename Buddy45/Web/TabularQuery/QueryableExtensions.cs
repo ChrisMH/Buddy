@@ -12,7 +12,15 @@ namespace Buddy.Web.TabularQuery
 {
     public static class QueryableExtensions
     {
-        public static TabularResponse ApplyQuery<T>(this IQueryable<T> data, TabularQuery query)
+        /// <summary>
+        /// Applies TabularQuery options to an IQueryable
+        /// </summary>
+        /// <typeparam name="T">Type of object in the IQueryable</typeparam>
+        /// <param name="data">The data to be transformed</param>
+        /// <param name="query">Transform options</param>
+        /// <param name="transform">Optional transform to apply to remaining items after paging has been done</param>
+        /// <returns></returns>
+        public static TabularResponse ApplyQuery<T>(this IQueryable<T> data, TabularQuery query, Action<T> transform = null)
         {
             var result = new TabularResponse();
 
@@ -28,6 +36,13 @@ namespace Buddy.Web.TabularQuery
 
             // Page
             data = data.Page(query.Skip, query.Take);
+
+            // Apply transform, if supplied
+            if (transform != null)
+            {
+                foreach (T item in data)
+                    transform(item);
+            }
 
             result.Items = data.ToList();
 
