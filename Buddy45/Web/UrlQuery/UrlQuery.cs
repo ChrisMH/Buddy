@@ -311,7 +311,7 @@ namespace Buddy.Web.UrlQuery
                 return;
             }
 
-            pi.SetValue(target, DateTime.Parse(source[queryAttr.UrlKey]).ToLocalTime());
+            pi.SetValue(target, DateTime.Parse(source[queryAttr.UrlKey]).ToUniversalTime());
         }
     }
 
