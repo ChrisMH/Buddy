@@ -14,7 +14,7 @@ namespace Buddy45.Test.Web.Client
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", version);
+            var pageConfig = new AppSettings("http://www.test.com/", "http://www.test.com/Virtual", version);
 
             var json = pageConfig.Json;
 
@@ -47,7 +47,7 @@ namespace Buddy45.Test.Web.Client
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", version);
+            var pageConfig = new AppSettings("http://www.test.com/", "http://www.test.com/Virtual", version);
 
             var javascript = pageConfig.ToJavascript();
 
@@ -70,7 +70,7 @@ namespace Buddy45.Test.Web.Client
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = version.Substring(0, version.LastIndexOf('.'));
 
-            var pageConfig = new PageConfig("http://www.test.com/", "http://www.test.com/Virtual", version);
+            var pageConfig = new AppSettings("http://www.test.com/", "http://www.test.com/Virtual", version);
 
             var javascript = pageConfig.ToJavascript("App.config.sectionConfig.lineConfig");
             
@@ -134,7 +134,7 @@ namespace Buddy45.Test.Web.Client
         }
 
 
-        internal class DerivedPageConfig : PageConfig
+        internal class DerivedPageConfig : AppSettings
         {
             public DerivedPageConfig(string originUrl, string rootUrl, string version)
                 : base(originUrl, rootUrl, version)
@@ -156,7 +156,7 @@ namespace Buddy45.Test.Web.Client
             public string PhoneNumber { get; set; }
         }
 
-        internal class ContainedClassPageConfig : PageConfig
+        internal class ContainedClassPageConfig : AppSettings
         {
             public ContainedClassPageConfig(string originUrl, string rootUrl, string version)
                 : base(originUrl, rootUrl, version)

@@ -13,13 +13,13 @@ namespace Buddy.Web.Client
     /// <summary>
     /// Base class for web page configuration information, exporting as a JSON object or Javascript
     /// </summary>
-    public class PageConfig
+    public class AppSettings
     {
-        public PageConfig()
+        public AppSettings()
         {
         }
 
-        public PageConfig(string originUrl, string rootUrl, string version)
+        public AppSettings(string originUrl, string rootUrl, string version)
         {
             OriginUrl = originUrl;
             RootUrl = rootUrl;
@@ -58,7 +58,7 @@ namespace Buddy.Web.Client
         /// </summary>
         /// <param name="objectName">Name of the enclosing struct</param>
         /// <returns>Javascript</returns>
-        public string ToJavascript(string objectName = "page.config")
+        public string ToJavascript(string objectName = "app.settings")
         {
             if (string.IsNullOrWhiteSpace(objectName))
                 throw new ArgumentException("objectName cannot be empty", nameof(objectName));
