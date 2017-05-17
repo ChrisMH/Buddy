@@ -85,7 +85,7 @@ namespace Buddy45.Test.Web.UrlQuery
         }
 
         [TestCase(true, "bm=t")]
-        [TestCase(false, "bm=f")]
+        [TestCase(false, "")]
         public void CanConvert_Bool_ToUrl(bool value, string expected)
         {
             var testClass = new TestClass {BoolMember = value};
@@ -105,11 +105,10 @@ namespace Buddy45.Test.Web.UrlQuery
         [TestCase("bm=t", true)]
         [TestCase("bm=true", true)]
         [TestCase("bm=True", true)]
-        [TestCase("bm=booger", false)]
-        [TestCase("bm=f", false)]
+		[TestCase("bm=f", false)]
         [TestCase("bm=false", false)]
-        [TestCase("bm=False", false)]
-        public void CanConvert_Bool_FromUrl(string value, bool expected)
+		[TestCase("bm=booger", false)]
+		public void CanConvert_Bool_FromUrl(string value, bool expected)
         {
             var testClass = new TestClass();
             var testSource = new Dictionary<string, string> {{value.Split('=')[0], value.Split('=')[1]}};
@@ -150,7 +149,7 @@ namespace Buddy45.Test.Web.UrlQuery
             var testClass = new TestClass();
             
             var testSource = new Dictionary<string, string> {{"dm", "2015-10-10T04:00:00Z"}};
-            var expected = new DateTime(2015, 10, 10, 0, 0, 0, DateTimeKind.Local);
+            var expected = new DateTime(2015, 10, 10, 4, 0, 0, DateTimeKind.Utc);
             
             var pi = testClass.GetType().GetProperties().First(p => p.Name == "DateMember");
             Assert.NotNull(pi);

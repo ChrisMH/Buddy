@@ -53,8 +53,8 @@ namespace Buddy45.Test.Web.Client
 
 
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"page\")) window.page={};" +
-                           "window.page.config={" +
+                           "if(!window.hasOwnProperty(\"app\")) window.app={};" +
+                           "window.app.settings={" +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +
@@ -99,8 +99,8 @@ namespace Buddy45.Test.Web.Client
             var javascript = pageConfig.ToJavascript();
             
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"page\")) window.page={};" +
-                           "window.page.config={" +
+						   "if(!window.hasOwnProperty(\"app\")) window.app={};" +
+						   "window.app.settings={" +
                            "userName:\"chogan\"," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
@@ -123,8 +123,8 @@ namespace Buddy45.Test.Web.Client
             
             Console.WriteLine(javascript);
             var expected = "(function(){" +
-                           "if(!window.hasOwnProperty(\"page\")) window.page={};" +
-                           "window.page.config={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
+						   "if(!window.hasOwnProperty(\"app\")) window.app={};" +
+						   "window.app.settings={containedClass:{password:\"god\",phoneNumber:\"1234567\"}," +
                            "originUrl:\"http://www.test.com/\"," +
                            "rootUrl:\"http://www.test.com/Virtual\"," +
                            $"version:\"{version}\"" +

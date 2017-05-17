@@ -265,6 +265,9 @@ namespace Buddy.Web.UrlQuery
                 throw new ArgumentException("Expecting a bool type");
 
             var value = Convert.ToBoolean(pi.GetValue(source)) ? "t" : "f";
+			if(value == "f")
+				return string.Empty;
+
             return $"{queryAttr.UrlKey}={value}";
         }
 
