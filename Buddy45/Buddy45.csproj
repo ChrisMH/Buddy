@@ -188,9 +188,6 @@
     <Compile Include="Enum\EnumExtensions.cs" />
     <Compile Include="JsSerializer\JsIgnoreAttribute.cs" />
     <Compile Include="JsSerializer\JsSerializer.cs" />
-    <Compile Include="UI\Kendo\MultiSelectConfig.cs" />
-    <Compile Include="UI\Kendo\DropDownConfig.cs" />
-    <Compile Include="UI\Kendo\GridConfig.cs" />
     <Compile Include="Utility\Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ReflectionType.cs" />

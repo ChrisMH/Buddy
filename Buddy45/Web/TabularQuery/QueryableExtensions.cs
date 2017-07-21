@@ -15,13 +15,19 @@ namespace Buddy.Web.TabularQuery
         /// <summary>
         /// Applies TabularQuery options to an IQueryable
         /// </summary>
-        /// <typeparam name="T">Type of object in the IQueryable</typeparam>
+        /// <typeparam name="TIn">Type of object in the IQueryable</typeparam>
+        /// <typeparam name="TOut">Type of object in the IQueryable</typeparam>
         /// <param name="data">The data to be transformed</param>
         /// <param name="query">Transform options</param>
         /// <param name="transform">Optional transform to apply to remaining items after paging has been done</param>
         /// <returns></returns>
-        public static TabularResponse ApplyQuery<T>(this IQueryable<T> data, TabularQuery query, Action<T> transform = null)
+        public static TabularResponse ApplyQuery<TIn, TOut>(this IQueryable<TIn> data, TabularQuery query, Func<TIn, TOut> transform = null)
         {
+            if(typeof(TIn) != typeof(TOut) && transform == null)
+            {
+                throw new ArgumentException("Output type does not match inpot type and transform is null", nameof(transform));
+            }
+
             var result = new TabularResponse();
 
             // Filter 
@@ -36,15 +42,16 @@ namespace Buddy.Web.TabularQuery
 
             // Page
             data = data.Page(query.Skip, query.Take);
-
+            
             // Apply transform, if supplied
-            if (transform != null)
+            if (transform == null)
             {
-                foreach (T item in data)
-                    transform(item);
+                result.Items = data.ToList();
             }
-
-            result.Items = data.ToList();
+            else
+            {
+                result.Items = data.Select(transform).ToList();
+            }
 
             return result;
         }
