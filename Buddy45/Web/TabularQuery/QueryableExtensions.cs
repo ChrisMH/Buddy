@@ -21,9 +21,39 @@ namespace Buddy.Web.TabularQuery
         /// <param name="query">Transform options</param>
         /// <param name="transform">Optional transform to apply to remaining items after paging has been done</param>
         /// <returns></returns>
-        public static TabularResponse ApplyQuery<TIn, TOut>(this IQueryable<TIn> data, TabularQuery query, Func<TIn, TOut> transform = null)
+        public static TabularResponse ApplyQuery<TIn>(this IQueryable<TIn> data, TabularQuery query)
         {
-            if(typeof(TIn) != typeof(TOut) && transform == null)
+            var result = new TabularResponse();
+
+            // Filter 
+            data = data.Filter(query.Filter);
+
+            // Count and aggregate
+            result.Count = data.Count();
+            result.Aggregates = data.Aggregate(query.Aggregate);
+
+            // Sort
+            data = data.Sort(query.Sort);
+
+            // Page
+            data = data.Page(query.Skip, query.Take);
+
+            result.Items = data.ToList();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Applies TabularQuery options to an IQueryable
+        /// </summary>
+        /// <typeparam name="T">Type of object in the IQueryable</typeparam>
+        /// <param name="data">The data to be transformed</param>
+        /// <param name="query">Transform options</param>
+        /// <param name="transform">Optional transform to apply to remaining items after paging has been done</param>
+        /// <returns></returns>
+        public static TabularResponse ApplyQuery<TIn, TOut>(this IQueryable<TIn> data, TabularQuery query, Func<TIn, TOut> transform)
+        {
+            if (typeof(TIn) != typeof(TOut) && transform == null)
             {
                 throw new ArgumentException("Output type does not match inpot type and transform is null", nameof(transform));
             }
@@ -42,7 +72,7 @@ namespace Buddy.Web.TabularQuery
 
             // Page
             data = data.Page(query.Skip, query.Take);
-            
+
             // Apply transform, if supplied
             if (transform == null)
             {
@@ -55,6 +85,7 @@ namespace Buddy.Web.TabularQuery
 
             return result;
         }
+
 
         public static object Aggregate<T>(this IQueryable<T> data, List<AggregateExpression> aggregate)
         {
