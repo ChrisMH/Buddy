@@ -96,7 +96,15 @@ namespace Buddy45.Test.Web.TabularQuery
                     return null;
 
                 case FilterExpression.Contains:
-                    return null;
+                    {
+                        // p => p.<fieldName>.StartsWith(<value>)
+                        var p = Expression.Property(lmdParam, fieldName.ToUpperCamelCase());
+                        var c = Expression.Constant(value);
+                        var method = typeof(string).GetMethod("IndexOf", new Type[] { typeof(string) });
+                        var methodCall = Expression.Call(p, method, c);
+
+                        return Expression.Lambda<Func<PerformanceEntry, bool>>(Expression.GreaterThanOrEqual(methodCall, Expression.Constant(0)), lmdParam);
+                    }
 
                 case FilterExpression.DoesNotContain:
                     return null;
@@ -118,13 +126,61 @@ namespace Buddy45.Test.Web.TabularQuery
             }
         }
 
+        public object GetValueForComparison(IQueryable<PerformanceEntry> data, string fieldName, string oper)
+        {
+            // Build a grouping to pull out a distinct value to use for the filter
+            var lmdParam = Expression.Parameter(typeof(PerformanceEntry), "p");
+
+            // p => p.<fieldName>
+            var lmdAccessor = Expression.Lambda<Func<PerformanceEntry, object>>(
+                Expression.Convert(
+                    Expression.MakeMemberAccess(lmdParam, typeof(PerformanceEntry).GetProperty(fieldName.ToUpperCamelCase())),
+                    typeof(object)),
+                lmdParam);
+
+            var values = data.GroupBy(lmdAccessor, p => p).Select(g => g.Key).OrderBy(k => k).ToList();
+
+            Assert.That(values.Any());
+            var value = values[values.Count / 2];
+
+            if(value.GetType() != typeof(string))
+            {
+                return value;
+            }
+
+            if(oper == FilterExpression.StartsWith)
+            {
+                return ((string)value).Substring(0, ((string)value).Length / 2);
+            }
+            else if(oper == FilterExpression.EndsWith)
+            {
+                return ((string)value).Substring(((string)value).Length / 2);
+            }
+            else if(oper == FilterExpression.Contains)
+            {
+                return ((string)value).Substring(1, ((string)value).Length - 2);
+            }
+            else if(oper == FilterExpression.DoesNotContain)
+            {
+                return ((string)value).Substring(1, ((string)value).Length - 2);
+            }
+
+            return value;
+        }
+
+
         [TestCase("customerName", FilterExpression.Eq)]
         [TestCase("customerName", FilterExpression.Eq, true)]
+        [TestCase("customerName", FilterExpression.Neq)]
+        [TestCase("customerName", FilterExpression.Neq, true)]
+        [TestCase("customerName", FilterExpression.StartsWith)]
+        [TestCase("customerName", FilterExpression.StartsWith, true)]
+        [TestCase("customerName", FilterExpression.Contains)]
+        [TestCase("customerName", FilterExpression.Contains, true)]
+
         [TestCase("availableMBytes", FilterExpression.Eq)]
         [TestCase("pctPagingFileUsage", FilterExpression.Eq)]
         [TestCase("statTime", FilterExpression.Eq)]
-        [TestCase("customerName", FilterExpression.Neq)]
-        [TestCase("customerName", FilterExpression.Neq, true)]
         [TestCase("availableMBytes", FilterExpression.Neq)]
         [TestCase("pctPagingFileUsage", FilterExpression.Neq)]
         [TestCase("statTime", FilterExpression.Neq)]
@@ -144,20 +200,7 @@ namespace Buddy45.Test.Web.TabularQuery
         {
             var data = PerformanceEntry.Load().AsQueryable();
 
-            // Build a grouping to pull out a distinct value to use for the filter
-            var lmdParam = Expression.Parameter(typeof(PerformanceEntry), "p");
-
-            // p => p.<fieldName>
-            var lmdAccessor = Expression.Lambda<Func<PerformanceEntry, object>>(
-                Expression.Convert(
-                    Expression.MakeMemberAccess(lmdParam, typeof(PerformanceEntry).GetProperty(fieldName.ToUpperCamelCase())),
-                    typeof(object)),
-                lmdParam);
-
-            var values = data.GroupBy(lmdAccessor, p => p).Select(g => g.Key).OrderBy(k => k).ToList();
-
-            Assert.That(values.Any());
-            var value = values[values.Count / 2];
+            var value = GetValueForComparison(data, fieldName, oper);
 
             var filter = new FilterExpression
             {
@@ -183,69 +226,7 @@ namespace Buddy45.Test.Web.TabularQuery
 
             Assert.AreEqual(expectedCount, result.Count());
         }
-
-
-        [TestCase("customerName")]
-        [TestCase("customerName", true)]
-        public void SingleStartsWithFilter(string fieldName, bool modifyCase = false)
-        {
-            var data = PerformanceEntry.Load().AsQueryable();
-
-            // Build a grouping to pull out a distinct value to use for the filter
-            var lmdParam = Expression.Parameter(typeof(PerformanceEntry), "p");
-
-            // p => p.<fieldName>
-            var lmdAccessor = Expression.Lambda<Func<PerformanceEntry, object>>(
-                Expression.Convert(
-                    Expression.MakeMemberAccess(lmdParam, typeof(PerformanceEntry).GetProperty(fieldName.ToUpperCamelCase())),
-                    typeof(object)),
-                lmdParam);
-
-            var values = data.GroupBy(lmdAccessor, p => p).Select(g => g.Key).OrderBy(k => k).ToList();
-
-            Assert.That(values.Any());
-            var value = Convert.ToString(values[values.Count / 2]);
-            value = value.Substring(0, value.Length / 2);
-
-            var filter = new FilterExpression
-            {
-                Logic = "and",
-                Filters = new List<FilterExpression>
-                {
-                    new FilterExpression
-                    {
-                        Operator = FilterExpression.StartsWith,
-                        Field = fieldName,
-                        Value = modifyCase ? value.ToLower() : value
-                    }
-                }
-            };
-
-            var param = new List<object>();
-            Console.WriteLine(filter.ToExpression<PerformanceEntry>(param));
-
-            var result = data.Filter(filter);
-
-            var lmdFilter = GetComparison(fieldName, FilterExpression.StartsWith, value);
-            var expectedCount = data.Count(lmdFilter);
-
-            Assert.AreEqual(expectedCount, result.Count());
-        }
-
-        [TestCase("customerName")]
-        public void SingleEndsWithFilter(string fieldName)
-        {
-        }
-
-        [TestCase("customerName")]
-        public void SingleContainsFilter(string fieldName)
-        {
-        }
-
-        [TestCase("customerName")]
-        public void SingleDoesNotContainFilter(string fieldName)
-        {
-        }
+        
 
         [TestCase("stringProperty")]
         [TestCase("nullableIntProperty")]

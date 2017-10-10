@@ -30,10 +30,10 @@ namespace Buddy.Web.TabularQuery
             {Lte, "<="},
             {Gt, ">"},
             {Gte, ">="},
-            {StartsWith, "StartsWith"},
-            {EndsWith, "EndsWith"},
-            {Contains, "Contains"},
-            {DoesNotContain, "Contains"},
+            {StartsWith, ""},
+            {EndsWith, ""},
+            {Contains, ""},
+            {DoesNotContain, ""},
             {IsNull, "= null"},
             {IsNotNull, "!= null"},
             {IsEmpty, "= String.Empty"},
@@ -61,26 +61,31 @@ namespace Buddy.Web.TabularQuery
 
             if (fieldProperty == null || string.IsNullOrWhiteSpace(Operator) || !Operators.ContainsKey(Operator))
                 return null;
-
-            string expression;
-
+            
             if (Operator == IsNull || Operator == IsNotNull)
             {
                 // Check first that the type can be set to null
                 if (fieldProperty.PropertyType.IsValueType && Nullable.GetUnderlyingType(fieldProperty.PropertyType) == null)
                     return null;
 
-                expression = $"{fieldProperty.Name} {Operators[Operator]}";
-                return expression;
+                if(Operator == IsNull)
+                {
+                    return $"{fieldProperty.Name} == null";
+                }
+                return $"{fieldProperty.Name} != null";
             }
 
             if (Operator == IsEmpty || Operator == IsNotEmpty)
             {
                 if (fieldProperty.PropertyType != typeof(string))
                     return null;
-                
-                expression = $"{fieldProperty.Name} {Operators[Operator]}";
-                return expression;
+
+                param.Add(String.Empty);
+                if (Operator == IsEmpty)
+                {
+                    return $"{fieldProperty.Name} == @{param.Count - 1}";
+                }
+                return $"{fieldProperty.Name} != @{param.Count - 1}";
             }
             
             if (string.IsNullOrWhiteSpace(Value))
@@ -88,34 +93,41 @@ namespace Buddy.Web.TabularQuery
 
             if (Operator == StartsWith || Operator == EndsWith || Operator == Contains || Operator == DoesNotContain)
             {
-                if (string.IsNullOrWhiteSpace(Value))
+                if (fieldProperty.PropertyType != typeof(string))
                     return null;
 
-                expression = $"{fieldProperty.Name}.{Operators[Operator]}(@{param.Count}, @{param.Count + 1})";
-                if (Operator == DoesNotContain)
-                { 
-                    expression = $"!{expression}";
-                }
                 param.Add(Convert.ChangeType(Value, fieldProperty.PropertyType));
                 param.Add(StringComparison.OrdinalIgnoreCase);
-                return expression;
+
+                if (Operator == StartsWith) 
+                { 
+                    return $"{fieldProperty.Name}.StartsWith(@{param.Count - 2}, @{param.Count - 1})";
+                }
+                else if (Operator == EndsWith)
+                {
+                    return $"{fieldProperty.Name}.EndsWith(@{param.Count - 2}, @{param.Count - 1})";
+                }
+                else if (Operator == Contains)
+                {
+                    return $"{fieldProperty.Name}.IndexOf(@{param.Count - 2}, @{param.Count - 1}) >= 0";
+                }
+                return $"{fieldProperty.Name}.IndexOf(@{param.Count - 2}, @{param.Count - 1}) < 0";
             }
             
             if (fieldProperty.PropertyType == typeof(string) && (Operator == Eq || Operator == Neq))
             {
-                expression = $"{fieldProperty.Name}.Equals(@{param.Count}, @{param.Count + 1})";
-                if(Operator == Neq)
-                {
-                    expression = $"!{expression}";
-                }
                 param.Add(Convert.ChangeType(Value, fieldProperty.PropertyType));
                 param.Add(StringComparison.OrdinalIgnoreCase);
-                return expression;
-            }
 
-            expression = $"{fieldProperty.Name} {Operators[Operator]} @{param.Count}";
+                if(Operator == Eq)
+                {
+                    return $"{fieldProperty.Name}.Equals(@{param.Count - 2}, @{param.Count - 1})";
+                }
+                return $"!{fieldProperty.Name}.Equals(@{param.Count - 2}, @{param.Count - 1})";
+            }
+            
             param.Add(Convert.ChangeType(Value, fieldProperty.PropertyType));
-            return expression;
+            return $"{fieldProperty.Name} {Operators[Operator]} @{param.Count - 1}";
         }
         
     }
