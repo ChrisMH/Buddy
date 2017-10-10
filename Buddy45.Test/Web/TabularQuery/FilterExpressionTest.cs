@@ -82,8 +82,16 @@ namespace Buddy45.Test.Web.TabularQuery
                             Expression.Constant(value)), lmdParam);
 
                 case FilterExpression.StartsWith:
-                    return null;
+                    {
+                        // p => p.<fieldName>.StartsWith(<value>)
+                        var p = Expression.Property(lmdParam, fieldName.ToUpperCamelCase());
+                        var c = Expression.Constant(value);
+                        var method = typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) });
+                        var methodCall = Expression.Call(p, method, c);
 
+                        return Expression.Lambda<Func<PerformanceEntry, bool>>(methodCall, lmdParam);
+                    }
+                
                 case FilterExpression.EndsWith:
                     return null;
 
@@ -111,10 +119,12 @@ namespace Buddy45.Test.Web.TabularQuery
         }
 
         [TestCase("customerName", FilterExpression.Eq)]
+        [TestCase("customerName", FilterExpression.Eq, true)]
         [TestCase("availableMBytes", FilterExpression.Eq)]
         [TestCase("pctPagingFileUsage", FilterExpression.Eq)]
         [TestCase("statTime", FilterExpression.Eq)]
         [TestCase("customerName", FilterExpression.Neq)]
+        [TestCase("customerName", FilterExpression.Neq, true)]
         [TestCase("availableMBytes", FilterExpression.Neq)]
         [TestCase("pctPagingFileUsage", FilterExpression.Neq)]
         [TestCase("statTime", FilterExpression.Neq)]
@@ -130,7 +140,7 @@ namespace Buddy45.Test.Web.TabularQuery
         [TestCase("availableMBytes", FilterExpression.Gte)]
         [TestCase("pctPagingFileUsage", FilterExpression.Gte)]
         [TestCase("statTime", FilterExpression.Gte)]
-        public void SingleComparisonFilter(string fieldName, string oper)
+        public void SingleComparisonFilter(string fieldName, string oper, bool modifyCase = false)
         {
             var data = PerformanceEntry.Load().AsQueryable();
 
@@ -145,6 +155,7 @@ namespace Buddy45.Test.Web.TabularQuery
                 lmdParam);
 
             var values = data.GroupBy(lmdAccessor, p => p).Select(g => g.Key).OrderBy(k => k).ToList();
+
             Assert.That(values.Any());
             var value = values[values.Count / 2];
 
@@ -157,7 +168,7 @@ namespace Buddy45.Test.Web.TabularQuery
                     {
                         Operator = oper,
                         Field = fieldName,
-                        Value = value.ToString()
+                        Value = modifyCase ? value.ToString().ToLower() : value.ToString()
                     }
                 }
             };
@@ -175,8 +186,50 @@ namespace Buddy45.Test.Web.TabularQuery
 
 
         [TestCase("customerName")]
-        public void SingleStartsWithFilter(string fieldName)
+        [TestCase("customerName", true)]
+        public void SingleStartsWithFilter(string fieldName, bool modifyCase = false)
         {
+            var data = PerformanceEntry.Load().AsQueryable();
+
+            // Build a grouping to pull out a distinct value to use for the filter
+            var lmdParam = Expression.Parameter(typeof(PerformanceEntry), "p");
+
+            // p => p.<fieldName>
+            var lmdAccessor = Expression.Lambda<Func<PerformanceEntry, object>>(
+                Expression.Convert(
+                    Expression.MakeMemberAccess(lmdParam, typeof(PerformanceEntry).GetProperty(fieldName.ToUpperCamelCase())),
+                    typeof(object)),
+                lmdParam);
+
+            var values = data.GroupBy(lmdAccessor, p => p).Select(g => g.Key).OrderBy(k => k).ToList();
+
+            Assert.That(values.Any());
+            var value = Convert.ToString(values[values.Count / 2]);
+            value = value.Substring(0, value.Length / 2);
+
+            var filter = new FilterExpression
+            {
+                Logic = "and",
+                Filters = new List<FilterExpression>
+                {
+                    new FilterExpression
+                    {
+                        Operator = FilterExpression.StartsWith,
+                        Field = fieldName,
+                        Value = modifyCase ? value.ToLower() : value
+                    }
+                }
+            };
+
+            var param = new List<object>();
+            Console.WriteLine(filter.ToExpression<PerformanceEntry>(param));
+
+            var result = data.Filter(filter);
+
+            var lmdFilter = GetComparison(fieldName, FilterExpression.StartsWith, value);
+            var expectedCount = data.Count(lmdFilter);
+
+            Assert.AreEqual(expectedCount, result.Count());
         }
 
         [TestCase("customerName")]

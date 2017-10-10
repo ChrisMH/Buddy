@@ -91,13 +91,27 @@ namespace Buddy.Web.TabularQuery
                 if (string.IsNullOrWhiteSpace(Value))
                     return null;
 
-                expression = $"{fieldProperty.Name}.{Operators[Operator]}(@{param.Count})";
+                expression = $"{fieldProperty.Name}.{Operators[Operator]}(@{param.Count}, @{param.Count + 1})";
                 if (Operator == DoesNotContain)
+                { 
                     expression = $"!{expression}";
+                }
                 param.Add(Convert.ChangeType(Value, fieldProperty.PropertyType));
+                param.Add(StringComparison.OrdinalIgnoreCase);
                 return expression;
             }
             
+            if (fieldProperty.PropertyType == typeof(string) && (Operator == Eq || Operator == Neq))
+            {
+                expression = $"{fieldProperty.Name}.Equals(@{param.Count}, @{param.Count + 1})";
+                if(Operator == Neq)
+                {
+                    expression = $"!{expression}";
+                }
+                param.Add(Convert.ChangeType(Value, fieldProperty.PropertyType));
+                param.Add(StringComparison.OrdinalIgnoreCase);
+                return expression;
+            }
 
             expression = $"{fieldProperty.Name} {Operators[Operator]} @{param.Count}";
             param.Add(Convert.ChangeType(Value, fieldProperty.PropertyType));
