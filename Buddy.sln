@@ -1,11 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26323.1
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{682AAC1F-0854-4771-AA14-1ACE8E890729}"
 	ProjectSection(SolutionItems) = preProject
 		nuspec\Buddy.nuspec = nuspec\Buddy.nuspec
+		build.py = build.py
 		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
 	EndProjectSection
 EndProject
@@ -171,5 +172,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18CD4B6C-14A5-412E-9217-C9EB7939FC99}
 	EndGlobalSection
 EndGlobal
