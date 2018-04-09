@@ -85,6 +85,7 @@
     <Compile Include="Web\Client\ScriptElemTest.cs" />
     <Compile Include="Web\TabularQuery\AggregateExpressionTest.cs" />
     <Compile Include="Web\TabularQuery\FilterExpressionTest.cs" />
+    <Compile Include="Web\TabularQuery\PlaygroundTest.cs" />
     <Compile Include="Web\TabularQuery\TestType.cs" />
     <Compile Include="Web\UrlQuery\QueryConvertersTest.cs" />
   </ItemGroup>
